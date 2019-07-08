@@ -1,112 +1,139 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @PlaceInputat
- * @flow
- */
+// /**
+//  * Sample React Native App
+//  * https://github.com/facebook/react-native
+//  *
+//  * @PlaceInputat
+//  * @flow
+//  */
 
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { connect } from 'react-redux';
+// import React, { Component } from 'react';
+// import { StyleSheet, View } from 'react-native';
+// import { connect } from 'react-redux';
 
-import PlaceInput from './src/components/PlaceInput/PlaceInput'
-import PlaceList from './src/components/PlaceList/PlaceList';
-// import placeImage from './src/assets/lagoon.jpg'
-import PlaceDetail from './src/components/PlaceDetail/PlaceDetail'
-import { addPlace, deletePlace, selectPlace, deselectPlace } from './src/store/actions/index'
+// import PlaceInput from './src/components/PlaceInput/PlaceInput'
+// import PlaceList from './src/components/PlaceList/PlaceList';
+// // import placeImage from './src/assets/lagoon.jpg'
+// import PlaceDetail from './src/components/PlaceDetail/PlaceDetail'
+// import { addPlace, deletePlace, selectPlace, deselectPlace } from './src/store/actions/index'
 
-class App extends Component {
-  // state = {
-  //   places: [],
-  //   selectedPlace: null
-  // }
 
-  placeAddedHandler = placeName => {
-    this.props.onAddPlace(placeName)
-    // this.setState(prevState => {
-    //   return {
-    //     places: prevState.places.concat({
-    //       key: Math.random(),
-    //       name: placeName,
-    //       // image: placeImage,
-    //       image: {
-    //         uri: "https://139992-434456-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2018/03/Fiji-Travel-Network-Blue-Lagoon-Beachfront2.jpg"
-    //       }
-    //     })
-    //   }
-    // })
+import { Navigation } from 'react-native-navigation'
+import { Provider } from 'react-redux'
+import AuthScreen from './src/screens/Auth/Auth'
+import SharePlaceScreen from './src/screens/SharePlace/SharePlace'
+import FindPlaceScreen from './src/screens/FindPlace/FindPlace'
+import PlaceDetailScreen from './src/screens/PlaceDetail/PlaceDetail'
+import SideDrawer from './src/screens/SideDrawer/SideDrawer'
+import configureStore from './src/store/configureStore'
+
+const store = configureStore()
+
+// Register screens
+Navigation.registerComponent("awesome-places.AuthScreen", () => AuthScreen, store, Provider);
+Navigation.registerComponent("awesome-places.SharePlaceScreen", () => SharePlaceScreen, store, Provider);
+Navigation.registerComponent("awesome-places.FindPlaceScreen", () => FindPlaceScreen, store, Provider);
+Navigation.registerComponent("awesome-places.PlaceDetailScreen", () => PlaceDetailScreen, store, Provider);
+Navigation.registerComponent("awesome-places.SideDrawer", () => SideDrawer);
+
+// Start an app
+Navigation.startSingleScreenApp({
+  screen: {
+    screen: "awesome-places.AuthScreen",
+    title: "Login"
   }
+})
 
-  placeSelectedHandler = key => {
-    this.props.onSelectPlace(key)
-    // this.setState(prevState => {
-    //   return {
-    //     selectedPlace: prevState.places.find(place => {
-    //       return place.key === key;
-    //     })
-    //   }
-    // })
-  }
+// class App extends Component {
+//   // state = {
+//   //   places: [],
+//   //   selectedPlace: null
+//   // }
 
-  onItemDeletedHandler = () => {
-    this.props.onDeletePlace()
-    // this.setState(prevState => {
-    //   return {
-    //     places: prevState.places.filter(place => {
-    //       return place.key !== prevState.selectedPlace.key;
-    //     }),
-    //     selectedPlace: null
-    //   }
-    // })
-  }
+//   placeAddedHandler = placeName => {
+//     this.props.onAddPlace(placeName)
+//     // this.setState(prevState => {
+//     //   return {
+//     //     places: prevState.places.concat({
+//     //       key: Math.random(),
+//     //       name: placeName,
+//     //       // image: placeImage,
+//     //       image: {
+//     //         uri: "https://139992-434456-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2018/03/Fiji-Travel-Network-Blue-Lagoon-Beachfront2.jpg"
+//     //       }
+//     //     })
+//     //   }
+//     // })
+//   }
 
-  onModalClosedHandler = () => {
-    this.props.onDeselectPlace()
-    // this.setState({
-    //   selectedPlace: null
-    // })
-  }
+//   placeSelectedHandler = key => {
+//     this.props.onSelectPlace(key)
+//     // this.setState(prevState => {
+//     //   return {
+//     //     selectedPlace: prevState.places.find(place => {
+//     //       return place.key === key;
+//     //     })
+//     //   }
+//     // })
+//   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <PlaceDetail
-          selectedPlace={this.props.selectedPlace}
-          onItemDeleted={this.onItemDeletedHandler}
-          onModalClosed={this.onModalClosedHandler}
-        />
-        <PlaceInput onPlaceAdded={this.placeAddedHandler} />
-        <PlaceList places={this.props.places} onItemSelected={this.placeSelectedHandler} />
-      </View>
-    );
-  }
-}
+//   onItemDeletedHandler = () => {
+//     this.props.onDeletePlace()
+//     // this.setState(prevState => {
+//     //   return {
+//     //     places: prevState.places.filter(place => {
+//     //       return place.key !== prevState.selectedPlace.key;
+//     //     }),
+//     //     selectedPlace: null
+//     //   }
+//     // })
+//   }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 26,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-});
+//   onModalClosedHandler = () => {
+//     this.props.onDeselectPlace()
+//     // this.setState({
+//     //   selectedPlace: null
+//     // })
+//   }
 
-const mapStateToProps = state => {
-  return {
-    places: state.places.places,
-    selectedPlace: state.places.selectedPlace
-  }
-}
+//   render() {
+//     return (
+//       <View style={styles.container}>
+//         <PlaceDetail
+//           selectedPlace={this.props.selectedPlace}
+//           onItemDeleted={this.onItemDeletedHandler}
+//           onModalClosed={this.onModalClosedHandler}
+//         />
+//         <PlaceInput onPlaceAdded={this.placeAddedHandler} />
+//         <PlaceList places={this.props.places} onItemSelected={this.placeSelectedHandler} />
+//       </View>
+//     );
+//   }
+// }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onAddPlace: (name) => dispatch(addPlace(name)),
-    onDeletePlace: () => dispatch(deletePlace()),
-    onSelectPlace: (key) => dispatch(selectPlace(key)),
-    onDeselectPlace: () => dispatch(deselectPlace())
-  }
-}
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 26,
+//     justifyContent: 'flex-start',
+//     alignItems: 'center',
+//     backgroundColor: '#FFF',
+//   },
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+// const mapStateToProps = state => {
+//   return {
+//     places: state.places.places,
+//     selectedPlace: state.places.selectedPlace
+//   }
+// }
+
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     onAddPlace: (name) => dispatch(addPlace(name)),
+//     onDeletePlace: () => dispatch(deletePlace()),
+//     onSelectPlace: (key) => dispatch(selectPlace(key)),
+//     onDeselectPlace: () => dispatch(deselectPlace())
+//   }
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App)
