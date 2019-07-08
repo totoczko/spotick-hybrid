@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         places: state.places.concat({
-          key: Math.random(),
+          key: Math.random().toString(),
           name: action.placeName,
           image: {
             uri: "https://139992-434456-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2018/03/Fiji-Travel-Network-Blue-Lagoon-Beachfront2.jpg"
