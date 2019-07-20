@@ -15,8 +15,9 @@ const reducer = (state = initialState, action) => {
           key: Math.random().toString(),
           name: action.placeName,
           image: {
-            uri: "https://139992-434456-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2018/03/Fiji-Travel-Network-Blue-Lagoon-Beachfront2.jpg"
-          }
+            uri: action.image.uri
+          },
+          location: action.location,
         })
       }
     case DELETE_PLACE:
