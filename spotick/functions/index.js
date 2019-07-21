@@ -3,6 +3,7 @@ const admin = require("firebase-admin")
 const cors = require('cors')({ origin: true });
 const fs = require('fs');
 const UUID = require("uuid-v4");
+
 const gcconfig = {
   projectId: "awesome-places-247312",
   keyFilename: "awesome-places.json"
@@ -54,7 +55,8 @@ exports.storeImage = functions.https.onRequest((request, response) => {
                 "/o/" +
                 encodeURIComponent(file.name) +
                 "?alt=media&token=" +
-                uuid
+                uuid,
+              imagePath: "/places/" + uuid + '.jpg'
             })
           } else {
             console.log(err);
@@ -68,3 +70,10 @@ exports.storeImage = functions.https.onRequest((request, response) => {
       })
   })
 });
+
+exports.deleteImage = functions.database.ref("/places/{placeId}").onDelete(snapshot => {
+  const placeData = snapshot.val()
+  const imagePath = placeData.imagePath
+  const bucket = gcs.bucket("awesome-places-247312.appspot.com")
+  return bucket.file(imagePath).delete()
+})
