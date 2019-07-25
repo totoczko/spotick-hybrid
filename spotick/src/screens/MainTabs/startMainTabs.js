@@ -4,21 +4,22 @@ import { Platform } from 'react-native'
 
 const startTabs = () => {
   Promise.all([
-    Icon.getImageSource(Platform.OS === 'android' ? "md-map" : "ios-map", 30),
-    Icon.getImageSource(Platform.OS === 'android' ? "md-share-alt" : "ios-share", 30),
+    Icon.getImageSource(Platform.OS === 'android' ? "md-home" : "ios-home", 30),
+    Icon.getImageSource(Platform.OS === 'android' ? "md-add" : "ios-add", 30),
+    Icon.getImageSource(Platform.OS === 'android' ? "md-person" : "ios-person", 30),
     Icon.getImageSource(Platform.OS === 'android' ? "md-menu" : "ios-menu", 30)
   ]).then(sources => {
     Navigation.startTabBasedApp({
       tabs: [
         {
           screen: "awesome-places.FindPlaceScreen",
-          label: "Find Place",
-          title: "Find Place",
+          title: "Mainsite",
           icon: sources[0],
+          showLabel: false,
           navigatorButtons: {
             leftButtons: [
               {
-                icon: sources[2],
+                icon: sources[3],
                 title: "Menu",
                 id: "sideDrawerToggle"
               }
@@ -27,13 +28,26 @@ const startTabs = () => {
         },
         {
           screen: "awesome-places.SharePlaceScreen",
-          label: "Share Place",
-          title: "Share Place",
+          title: "Add post",
           icon: sources[1],
           navigatorButtons: {
             leftButtons: [
               {
-                icon: sources[2],
+                icon: sources[3],
+                title: "Menu",
+                id: "sideDrawerToggle"
+              }
+            ]
+          }
+        },
+        {
+          screen: "awesome-places.SharePlaceScreen",
+          title: "Profile",
+          icon: sources[2],
+          navigatorButtons: {
+            leftButtons: [
+              {
+                icon: sources[3],
                 title: "Menu",
                 id: "sideDrawerToggle"
               }
@@ -42,10 +56,11 @@ const startTabs = () => {
         }
       ],
       tabsStyle: {
-        tabBarSelectedButtonColor: "orange" //ios
+        tabBarSelectedButtonColor: "#212985" //ios
+
       },
       appStyle: {
-        tabBarSelectedButtonColor: "orange" //android
+        tabBarSelectedButtonColor: "#212985" //android
       },
       drawer: {
         left: {
