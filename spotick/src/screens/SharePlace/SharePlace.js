@@ -2,17 +2,15 @@ import React, { Component } from 'react'
 import { View, ActivityIndicator, Button, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native'
 import { connect } from 'react-redux'
 import { addPlace } from '../../store/actions/index'
-import HeadingText from '../../components/UI/HeadingText/HeadingText'
 import PlaceInput from '../../components/PlaceInput/PlaceInput';
 import PickImage from '../../components/PickImage/PickImage';
-import PickLocation from '../../components/PickLocation/PickLocation';
-import MainText from '../../components/UI/MainText/MainText';
 import validate from '../../utility/validation';
 import { startAddPlace } from '../../store/actions/index'
+import ButtonWithBackground from '../../components/UI/ButtonWithBackground/ButtonWithBackground';
 
 class SharePlaceScreen extends Component {
   static navigatorStyle = {
-    navBarButtonColor: "orange"
+    navBarButtonColor: "#3f51b5"
   }
 
   constructor(props) {
@@ -33,7 +31,11 @@ class SharePlaceScreen extends Component {
         },
         location: {
           value: null,
-          valid: false
+          valid: false,
+          validationRules: {
+            notEmpty: true
+          },
+          touched: false
         },
         image: {
           value: null,
@@ -52,6 +54,42 @@ class SharePlaceScreen extends Component {
       this.props.navigator.switchToTab({ tabIndex: 0 })
       // this.props.onStartAddPlace()
     }
+  }
+
+  componentDidMount() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.getCity(position.coords.latitude, position.coords.longitude)
+            .then(city => {
+              this.setState(prevState => {
+                return {
+                  controls: {
+                    ...prevState.controls,
+                    location: {
+                      value: city,
+                      valid: true
+                    }
+                  }
+                }
+              })
+            })
+        },
+        (err) => {
+          console.log(err);
+        }
+      )
+    }
+  }
+
+  getCity(lat, long) {
+    return fetch("https://us1.locationiq.com/v1/reverse.php?key=2c35b6ae22579a&lat=" + lat + "&lon=" + long + "&format=json", {
+      "async": true,
+      "crossDomain": true,
+      "method": "GET"
+    }).then(res => res.json()).then(res => {
+      return res.address.city || res.address.town;
+    })
   }
 
   onNavigatorEvent = event => {
@@ -78,7 +116,6 @@ class SharePlaceScreen extends Component {
     );
     this.reset()
     this.imagePicker.reset()
-    this.locationPicker.reset()
     // this.props.navigator.switchToTab({ tabIndex: 0 })
   }
 
@@ -104,8 +141,10 @@ class SharePlaceScreen extends Component {
         controls: {
           ...prevState.controls,
           location: {
+            ...prevState.controls.location,
             value: location,
-            valid: true
+            touched: true,
+            valid: validate(val, prevState.controls.location.validationRules)
           }
         }
       }
@@ -127,14 +166,15 @@ class SharePlaceScreen extends Component {
   }
 
   render() {
-    let submitButton = <Button
-      title="Share the place"
+    let submitButton = <ButtonWithBackground
       onPress={this.placeAddedHandler}
+      color="#3f51b5"
+      textColor="#fff"
       disabled={
         !this.state.controls.placeName.valid ||
         !this.state.controls.location.valid ||
         !this.state.controls.image.valid
-      } />;
+      }>Opublikuj</ButtonWithBackground>;
 
     if (this.props.isLoading) {
       submitButton = <ActivityIndicator />
@@ -143,14 +183,16 @@ class SharePlaceScreen extends Component {
     return (
       <ScrollView>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
-          <MainText>
-            <HeadingText>Share a place with us!</HeadingText>
-          </MainText>
           <PickImage onImagePicked={this.imagePickedHandler} ref={ref => (this.imagePicker = ref)} />
-          <PickLocation onLocationPicked={this.locationPickedHandler} ref={ref => (this.locationPicker = ref)} />
+          <PlaceInput
+            placeData={this.state.controls.location}
+            onChangeText={this.locationPickedHandler}
+            placeholder={"Wpisz lokalizację"}
+          />
           <PlaceInput
             placeData={this.state.controls.placeName}
             onChangeText={this.placeNameChangedHandler}
+            placeholder={"Wpisz podpis"}
           />
           <View style={styles.button}>
             {submitButton}
@@ -181,7 +223,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   button: {
-    margin: 8
+    margin: 8,
+    width: "100%"
   }
 })
 

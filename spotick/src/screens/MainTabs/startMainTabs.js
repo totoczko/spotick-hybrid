@@ -41,7 +41,7 @@ const startTabs = () => {
           }
         },
         {
-          screen: "awesome-places.SharePlaceScreen",
+          screen: "awesome-places.UserScreen",
           title: "Profile",
           icon: sources[2],
           navigatorButtons: {

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import { View, Image, Button, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet } from 'react-native'
 import ImagePicker from "react-native-image-picker"
+import ButtonWithBackground from '../UI/ButtonWithBackground/ButtonWithBackground';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Platform } from 'react-native'
 
 export default class PickImage extends Component {
   state = {
@@ -16,7 +19,7 @@ export default class PickImage extends Component {
   pickImageHandler = () => {
     ImagePicker.showImagePicker(
       {
-        title: 'Pick an image',
+        title: 'Wybierz zdjęcie',
         maxWidth: 800,
         maxHeight: 600
       },
@@ -44,7 +47,12 @@ export default class PickImage extends Component {
           <Image source={this.state.pickedImage} style={styles.previewImage} />
         </View>
         <View style={styles.button}>
-          <Button title="Pick image" onPress={this.pickImageHandler} />
+          <Icon
+            size={36}
+            name={Platform.OS === "android" ? "md-camera" : "ios-camera"}
+            color="#3f51b5"
+            onPress={this.pickImageHandler}
+          />
         </View>
       </View>
     )
@@ -60,11 +68,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     backgroundColor: "#eee",
-    width: "80%",
-    height: 150
+    width: "100%",
+    height: 300
   },
   button: {
-    margin: 8
+    margin: 15
   },
   previewImage: {
     width: '100%',

@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import {
   View,
   StyleSheet,
-  ImageBackground,
   Dimensions,
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  ActivityIndicator
+  ActivityIndicator,
+  Text
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -15,9 +15,11 @@ import DefaultInput from "../../components/UI/DefaultInput/DefaultInput";
 import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import MainText from "../../components/UI/MainText/MainText";
 import ButtonWithBackground from "../../components/UI/ButtonWithBackground/ButtonWithBackground";
-import backgroundImage from "../../assets/background.jpg";
+import ButtonPlain from "../../components/UI/ButtonPlain/ButtonPlain";
 import validate from "../../utility/validation";
 import { tryAuth, authAutoSignIn } from "../../store/actions/index";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Platform } from 'react-native'
 
 class AuthScreen extends Component {
   state = {
@@ -137,7 +139,8 @@ class AuthScreen extends Component {
     let confirmPasswordControl = null;
     let submitButton = (
       <ButtonWithBackground
-        color="#29aaf4"
+        color="#3f51b5"
+        textColor="#fff"
         onPress={this.authHandler}
         disabled={
           (!this.state.controls.confirmPassword.valid &&
@@ -146,14 +149,14 @@ class AuthScreen extends Component {
           !this.state.controls.password.valid
         }
       >
-        Submit
+        {this.state.authMode === "login" ? "Zaloguj się" : "Zarejestruj się"}
       </ButtonWithBackground>
     );
 
     if (this.state.viewMode === "portrait") {
       headingText = (
         <MainText>
-          <HeadingText>Please Log In</HeadingText>
+          <HeadingText>{this.state.authMode === "login" ? "Zaloguj się" : "Zarejestruj się"}</HeadingText>
         </MainText>
       );
     }
@@ -167,8 +170,7 @@ class AuthScreen extends Component {
           }
         >
           <DefaultInput
-            placeholder="Confirm Password"
-            style={styles.input}
+            placeholder="Potwierdź hasło"
             value={this.state.controls.confirmPassword.value}
             onChangeText={val => this.updateInputState("confirmPassword", val)}
             valid={this.state.controls.confirmPassword.valid}
@@ -182,20 +184,20 @@ class AuthScreen extends Component {
       submitButton = <ActivityIndicator />;
     }
     return (
-      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+      <View style={styles.backgroundImage}>
         <KeyboardAvoidingView style={styles.container} behavior="padding">
+          <View style={styles.iconContainer}>
+            <Icon
+              size={22}
+              name={Platform.OS === "android" ? "md-lock" : "ios-lock"}
+              color="#fff"
+            />
+          </View>
           {headingText}
-          <ButtonWithBackground
-            color="#29aaf4"
-            onPress={this.switchAuthModeHandler}
-          >
-            Switch to {this.state.authMode === "login" ? "Sign Up" : "Login"}
-          </ButtonWithBackground>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.inputContainer}>
               <DefaultInput
-                placeholder="Your E-Mail Address"
-                style={styles.input}
+                placeholder="Email"
                 value={this.state.controls.email.value}
                 onChangeText={val => this.updateInputState("email", val)}
                 valid={this.state.controls.email.valid}
@@ -221,8 +223,7 @@ class AuthScreen extends Component {
                   }
                 >
                   <DefaultInput
-                    placeholder="Password"
-                    style={styles.input}
+                    placeholder="Hasło"
                     value={this.state.controls.password.value}
                     onChangeText={val => this.updateInputState("password", val)}
                     valid={this.state.controls.password.valid}
@@ -235,28 +236,36 @@ class AuthScreen extends Component {
             </View>
           </TouchableWithoutFeedback>
           {submitButton}
+          <Text>{this.state.authMode === "login" ? "Nie masz jeszcze konta?" : "Masz już konto?"}</Text>
+          <ButtonPlain
+            color="#3f51b5"
+            onPress={this.switchAuthModeHandler}
+          >
+            {this.state.authMode === "login" ? "Zarejestruj się" : "Zaloguj się"}
+          </ButtonPlain>
         </KeyboardAvoidingView>
-      </ImageBackground>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: "#fff",
+    width: "80%",
+    height: 400
   },
   backgroundImage: {
     width: "100%",
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fafafa",
+    justifyContent: "center",
+    alignItems: "center"
   },
   inputContainer: {
     width: "80%"
-  },
-  input: {
-    backgroundColor: "#eee",
-    borderColor: "#bbb"
   },
   landscapePasswordContainer: {
     flexDirection: "row",
@@ -271,6 +280,16 @@ const styles = StyleSheet.create({
   },
   portraitPasswordWrapper: {
     width: "100%"
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15,
+    backgroundColor: "#3f51b5",
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 50
   }
 });
 
