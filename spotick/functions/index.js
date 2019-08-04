@@ -32,7 +32,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
     admin.auth().verifyIdToken(idToken)
       .then(decodedToken => {
         const body = JSON.parse(request.body);
-        fs.writeFileSync("/tmp/uploaded-image.jpg", body.image, "base64", err => {
+        fs.writeFileSync("/tmp/uploaded-image.jpg", body.img, "base64", err => {
           console.log(err);
           return response.status(500).json({ error: err })
         })
@@ -56,7 +56,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
                 encodeURIComponent(file.name) +
                 "?alt=media&token=" +
                 uuid,
-              imagePath: "/places/" + uuid + '.jpg'
+              imageid: uuid
             })
           } else {
             console.log(err);
@@ -73,7 +73,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
 
 exports.deleteImage = functions.database.ref("/places/{placeId}").onDelete(snapshot => {
   const placeData = snapshot.val()
-  const imagePath = placeData.imagePath
+  const imageId = placeData.imageid
   const bucket = gcs.bucket("awesome-places-247312.appspot.com")
-  return bucket.file(imagePath).delete()
+  return bucket.file("/places/" + imageId + '.jpg').delete()
 })

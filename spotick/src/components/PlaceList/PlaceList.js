@@ -9,8 +9,10 @@ const PlaceList = (props) => {
       data={props.places}
       renderItem={(info) => (
         <ListItem
-          placeName={info.item.name}
-          placeImage={info.item.image}
+          placeText={info.item.shortText}
+          placeDate={info.item.data}
+          placeLocation={info.item.geo}
+          placeImage={info.item.img}
           onItemPressed={() => props.onItemSelected(info.item.key)}
         />
       )}

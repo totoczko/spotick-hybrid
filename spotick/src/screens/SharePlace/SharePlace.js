@@ -21,9 +21,10 @@ class SharePlaceScreen extends Component {
   reset = () => {
     this.setState({
       controls: {
-        placeName: {
+        placeText: {
           value: "",
           valid: false,
+          placeholder: "Wpisz opis",
           validationRules: {
             notEmpty: true
           },
@@ -32,14 +33,20 @@ class SharePlaceScreen extends Component {
         location: {
           value: null,
           valid: false,
+          placeholder: "Wpisz miasto",
           validationRules: {
             notEmpty: true
           },
           touched: false
         },
-        image: {
+        img: {
           value: null,
           valid: false
+        },
+        user: {
+          color: '',
+          id: '',
+          name: ''
         }
       }
     })
@@ -109,26 +116,28 @@ class SharePlaceScreen extends Component {
   }
 
   placeAddedHandler = () => {
+    const date = new Date().getTime();
     this.props.onAddPlace(
-      this.state.controls.placeName.value,
+      this.state.controls.placeText.value,
       this.state.controls.location.value,
-      this.state.controls.image.value
+      this.state.controls.img.value,
+      date
     );
     this.reset()
     this.imagePicker.reset()
     // this.props.navigator.switchToTab({ tabIndex: 0 })
   }
 
-  placeNameChangedHandler = val => {
+  placeTextChangedHandler = val => {
     this.setState(prevState => {
       return {
         controls: {
           ...prevState.controls,
-          placeName: {
-            ...prevState.controls.placeName,
+          placeText: {
+            ...prevState.controls.placeText,
             value: val,
             touched: true,
-            valid: validate(val, prevState.controls.placeName.validationRules)
+            valid: validate(val, prevState.controls.placeText.validationRules)
           }
         }
       }
@@ -144,20 +153,20 @@ class SharePlaceScreen extends Component {
             ...prevState.controls.location,
             value: location,
             touched: true,
-            valid: validate(val, prevState.controls.location.validationRules)
+            valid: validate(location, prevState.controls.location.validationRules)
           }
         }
       }
     })
   }
 
-  imagePickedHandler = image => {
+  imagePickedHandler = img => {
     this.setState(prevState => {
       return {
         controls: {
           ...prevState.controls,
-          image: {
-            value: image,
+          img: {
+            value: img,
             valid: true
           }
         }
@@ -171,9 +180,9 @@ class SharePlaceScreen extends Component {
       color="#3f51b5"
       textColor="#fff"
       disabled={
-        !this.state.controls.placeName.valid ||
+        !this.state.controls.placeText.valid ||
         !this.state.controls.location.valid ||
-        !this.state.controls.image.valid
+        !this.state.controls.img.valid
       }>Opublikuj</ButtonWithBackground>;
 
     if (this.props.isLoading) {
@@ -190,8 +199,8 @@ class SharePlaceScreen extends Component {
             placeholder={"Wpisz lokalizację"}
           />
           <PlaceInput
-            placeData={this.state.controls.placeName}
-            onChangeText={this.placeNameChangedHandler}
+            placeData={this.state.controls.placeText}
+            onChangeText={this.placeTextChangedHandler}
             placeholder={"Wpisz podpis"}
           />
           <View style={styles.button}>
@@ -205,7 +214,7 @@ class SharePlaceScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddPlace: (placeName, location, image) => dispatch(addPlace(placeName, location, image)),
+    onAddPlace: (placeText, location, img, date) => dispatch(addPlace(placeText, location, img, date)),
     onStartAddPlace: () => dispatch(startAddPlace())
   }
 }

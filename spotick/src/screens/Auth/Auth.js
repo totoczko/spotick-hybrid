@@ -49,6 +49,14 @@ class AuthScreen extends Component {
           equalTo: "password"
         },
         touched: false
+      },
+      username: {
+        value: "",
+        valid: false,
+        validationRules: {
+          minLength: 4
+        },
+        touched: false
       }
     }
   };
@@ -83,7 +91,8 @@ class AuthScreen extends Component {
   authHandler = () => {
     const authData = {
       email: this.state.controls.email.value,
-      password: this.state.controls.password.value
+      password: this.state.controls.password.value,
+      username: this.state.controls.username.value
     };
     this.props.onTryAuth(authData, this.state.authMode);
   };
@@ -137,6 +146,7 @@ class AuthScreen extends Component {
   render() {
     let headingText = null;
     let confirmPasswordControl = null;
+    let usernameControl = null;
     let submitButton = (
       <ButtonWithBackground
         color="#3f51b5"
@@ -146,7 +156,9 @@ class AuthScreen extends Component {
           (!this.state.controls.confirmPassword.valid &&
             this.state.authMode === "signup") ||
           !this.state.controls.email.valid ||
-          !this.state.controls.password.valid
+          !this.state.controls.password.valid ||
+          !this.state.controls.username.valid &&
+          this.state.authMode === "signup"
         }
       >
         {this.state.authMode === "login" ? "Zaloguj się" : "Zarejestruj się"}
@@ -175,6 +187,26 @@ class AuthScreen extends Component {
             onChangeText={val => this.updateInputState("confirmPassword", val)}
             valid={this.state.controls.confirmPassword.valid}
             touched={this.state.controls.confirmPassword.touched}
+            secureTextEntry
+          />
+        </View>
+      );
+    }
+    if (this.state.authMode === "signup") {
+      usernameControl = (
+        <View
+          style={
+            this.state.viewMode === "portrait"
+              ? styles.portraitPasswordWrapper
+              : styles.landscapePasswordWrapper
+          }
+        >
+          <DefaultInput
+            placeholder="Wpisz login"
+            value={this.state.controls.username.value}
+            onChangeText={val => this.updateInputState("username", val)}
+            valid={this.state.controls.username.valid}
+            touched={this.state.controls.username.touched}
             secureTextEntry
           />
         </View>
@@ -232,6 +264,7 @@ class AuthScreen extends Component {
                   />
                 </View>
                 {confirmPasswordControl}
+                {usernameControl}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -255,7 +288,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     width: "80%",
-    height: 400
+    height: 700
   },
   backgroundImage: {
     width: "100%",

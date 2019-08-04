@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableNativeFeedback, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Platform } from 'react-native'
+import { formatData } from '../../utility/formatData';
 
 
 // TouchableNativeFeedback only on Android!
@@ -13,7 +14,7 @@ const ListItem = (props) => {
           <View style={styles.avatar}><Text style={styles.avatarText}>P</Text></View>
           <View style={styles.listItemInfo}>
             <View><Text>lolo</Text></View>
-            <View><Text>13 maja</Text></View>
+            <View><Text>{formatData(props.placeDate)}</Text></View>
           </View>
         </View>
         <Image source={props.placeImage} style={styles.placeImage} />
@@ -27,9 +28,9 @@ const ListItem = (props) => {
                 color="#999"
                 style={{ marginRight: 5 }}
               />
-              <Text>{props.placeName}</Text>
+              <Text>{props.placeLocation}</Text>
             </View>
-            <Text>{props.placeName}</Text>
+            <Text>{props.placeText}</Text>
           </View>
           <View style={styles.bottomRight}>
             <Icon

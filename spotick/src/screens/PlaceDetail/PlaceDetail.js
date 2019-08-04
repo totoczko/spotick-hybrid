@@ -52,7 +52,7 @@ class PlaceDetail extends Component {
         <View style={styles.placeDetailContainer}>
           <View style={styles.subContainer}>
             <Image
-              source={this.props.selectedPlace.image}
+              source={this.props.selectedPlace.img}
               style={styles.placeImage}
             />
           </View>
@@ -74,8 +74,8 @@ class PlaceDetail extends Component {
         </View>
         <View style={styles.subContainer}>
           <View>
-            <Text style={styles.placeName}>
-              {this.props.selectedPlace.name}
+            <Text style={styles.placeText}>
+              {this.props.selectedPlace.shortText}
             </Text>
           </View>
           <View>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%"
   },
-  placeName: {
+  placeText: {
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 28

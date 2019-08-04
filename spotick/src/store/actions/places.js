@@ -1,5 +1,6 @@
 import { SET_PLACES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from './actionTypes'
 import { uiStartLoading, uiStopLoading, authGetToken } from './index'
+const uuid = require('uuid/v4');
 
 export const startAddPlace = () => {
   return {
@@ -7,10 +8,10 @@ export const startAddPlace = () => {
   }
 }
 
-export const addPlace = (placeName, location, image) => {
+export const addPlace = (placeText, location, img, date) => {
   // return {
   //   type: ADD_PLACE,
-  //   placeName: placeName,
+  //   placeText: placeText,
   //   location: location,
   //   image: image
   // };
@@ -28,7 +29,7 @@ export const addPlace = (placeName, location, image) => {
         return fetch("https://us-central1-awesome-places-247312.cloudfunctions.net/storeImage", {
           method: "POST",
           body: JSON.stringify({
-            image: image.base64
+            img: img.base64
           }),
           headers: {
             "Authorization": "Bearer " + authToken
@@ -48,14 +49,17 @@ export const addPlace = (placeName, location, image) => {
         }
       })
       .then(parsedRes => {
+        const id = uuid()
         const placeData = {
-          name: placeName,
-          location: location,
-          image: parsedRes.imageUrl,
-          imagePath: parsedRes.imagePath
+          shortText: placeText,
+          geo: location,
+          img: parsedRes.imageUrl,
+          imageid: parsedRes.imageid,
+          data: date,
+          id: id
         }
-        return fetch("https://awesome-places-247312.firebaseio.com/places.json?auth=" + authToken, {
-          method: 'POST',
+        return fetch("https://awesome-places-247312.firebaseio.com/places/" + id + ".json?auth=" + authToken, {
+          method: 'PUT',
           body: JSON.stringify(placeData)
         })
 
@@ -114,8 +118,8 @@ export const getPlaces = () => {
         for (let key in parsedRes) {
           places.push({
             ...parsedRes[key],
-            image: {
-              uri: parsedRes[key].image
+            img: {
+              uri: parsedRes[key].img
             },
             key: key
           })

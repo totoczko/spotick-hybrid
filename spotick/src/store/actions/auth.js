@@ -7,6 +7,17 @@ import App from '../../../App'
 
 const API_KEY = "AIzaSyD_oOy6uUjeieDfpQKICsTsYnz7tpcZDPw";
 
+const getUserColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+let loginRes = null
+
 export const tryAuth = (authData, authMode) => {
   return dispatch => {
     dispatch(uiStartLoading());
@@ -23,6 +34,7 @@ export const tryAuth = (authData, authMode) => {
       body: JSON.stringify({
         email: authData.email,
         password: authData.password,
+        displayName: authData.username,
         returnSecureToken: true
       }),
       headers: {
@@ -38,32 +50,90 @@ export const tryAuth = (authData, authMode) => {
       .then(parsedRes => {
         dispatch(uiStopLoading());
         console.log(parsedRes);
+        loginRes = parsedRes;
         if (!parsedRes.idToken) {
           alert("Authentication failed, please try again!");
         } else {
-          dispatch(authStoreToken(parsedRes.idToken, parsedRes.expiresIn, parsedRes.refreshToken));
-          startMainTabs();
+
+          if (authMode === "signup") {
+            const userData = {
+              color: getUserColor(),
+              email: parsedRes.email,
+              id: parsedRes.localId,
+              username: parsedRes.displayName
+            }
+            fetch("https://awesome-places-247312.firebaseio.com/users/" + parsedRes.localId + ".json?auth=" + parsedRes.idToken, {
+              method: 'PUT',
+              body: JSON.stringify(userData)
+            })
+              .then(res => {
+                if (res.ok) {
+                  return res.json()
+                } else {
+                  throw new Error()
+                }
+              })
+              .then(parsedRes => {
+                console.log(parsedRes)
+                dispatch(authStoreToken(parsedRes.idToken, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, parsedRes.expiresIn, parsedRes.refreshToken));
+                startMainTabs()
+              })
+              .catch(err => {
+                console.log(err)
+                alert('something went wrong!')
+                dispatch(uiStopLoading())
+              })
+          } else {
+            let userData = {
+              color: '',
+              email: '',
+              id: '',
+              username: ''
+            }
+            fetch("https://awesome-places-247312.firebaseio.com/users/" + parsedRes.localId + ".json?auth=" + parsedRes.idToken)
+              .then(res => {
+                if (res.ok) {
+                  return res.json()
+                } else {
+                  throw new Error()
+                }
+              })
+              .then(parsedRes => {
+                console.log(parsedRes)
+                dispatch(authStoreToken(loginRes.idToken, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, loginRes.expiresIn, loginRes.refreshToken));
+                startMainTabs()
+              })
+              .catch(err => {
+                console.log(err)
+                alert('something went wrong!')
+                dispatch(uiStopLoading())
+              })
+          }
         }
       });
   };
 };
 
-export const authStoreToken = (token, expiresIn, refreshToken) => {
+export const authStoreToken = (token, color, username, email, id, expiresIn, refreshToken) => {
   return dispatch => {
     const now = new Date();
     const expiryDate = now.getTime() + expiresIn * 1000;
-    dispatch(authSetToken(token, expiryDate));
+    dispatch(authSetToken(token, color, username, email, id, expiryDate));
     AsyncStorage.setItem("ap:auth:token", token);
     AsyncStorage.setItem("ap:auth:expiryDate", expiryDate.toString());
     AsyncStorage.setItem("ap:auth:refreshToken", refreshToken);
   };
 };
 
-export const authSetToken = (token, expiryDate) => {
+export const authSetToken = (token, color, username, email, id, expiryDate) => {
   return {
     type: AUTH_SET_TOKEN,
     token: token,
-    expiryDate: expiryDate
+    expiryDate: expiryDate,
+    color: color,
+    username: username,
+    email: email,
+    id: id
   };
 };
 
@@ -89,7 +159,7 @@ export const authGetToken = () => {
             const parsedExpiryDate = new Date(parseInt(expiryDate));
             const now = new Date();
             if (parsedExpiryDate > now) {
-              dispatch(authSetToken(fetchedToken));
+              dispatch(authSetToken(fetchedToken, color, username, email, id));
               resolve(fetchedToken);
             } else {
               reject();
@@ -116,7 +186,7 @@ export const authGetToken = () => {
           .then(parsedRes => {
             if (parsedRes.id_token) {
               console.log("refresh token worked")
-              dispatch(authStoreToken(parsedRes.id_token, parsedRes.expires_in, parsedRes.refresh_token))
+              dispatch(authStoreToken(parsedRes.id_token, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, parsedRes.expires_in, parsedRes.refresh_token))
               return parsedRes.id_token
             } else {
               dispatch(authClearStorage());
