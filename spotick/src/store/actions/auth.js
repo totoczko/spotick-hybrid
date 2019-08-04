@@ -54,7 +54,6 @@ export const tryAuth = (authData, authMode) => {
         if (!parsedRes.idToken) {
           alert("Authentication failed, please try again!");
         } else {
-
           if (authMode === "signup") {
             const userData = {
               color: getUserColor(),
@@ -66,16 +65,10 @@ export const tryAuth = (authData, authMode) => {
               method: 'PUT',
               body: JSON.stringify(userData)
             })
-              .then(res => {
-                if (res.ok) {
-                  return res.json()
-                } else {
-                  throw new Error()
-                }
-              })
+              .then(res => res.json())
               .then(parsedRes => {
                 console.log(parsedRes)
-                dispatch(authStoreToken(parsedRes.idToken, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, parsedRes.expiresIn, parsedRes.refreshToken));
+                dispatch(authStoreToken(loginRes.idToken, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, loginRes.expiresIn, loginRes.refreshToken));
                 startMainTabs()
               })
               .catch(err => {
@@ -84,22 +77,9 @@ export const tryAuth = (authData, authMode) => {
                 dispatch(uiStopLoading())
               })
           } else {
-            let userData = {
-              color: '',
-              email: '',
-              id: '',
-              username: ''
-            }
             fetch("https://awesome-places-247312.firebaseio.com/users/" + parsedRes.localId + ".json?auth=" + parsedRes.idToken)
-              .then(res => {
-                if (res.ok) {
-                  return res.json()
-                } else {
-                  throw new Error()
-                }
-              })
+              .then(res => res.json())
               .then(parsedRes => {
-                console.log(parsedRes)
                 dispatch(authStoreToken(loginRes.idToken, parsedRes.color, parsedRes.username, parsedRes.email, parsedRes.id, loginRes.expiresIn, loginRes.refreshToken));
                 startMainTabs()
               })
@@ -122,6 +102,10 @@ export const authStoreToken = (token, color, username, email, id, expiresIn, ref
     AsyncStorage.setItem("ap:auth:token", token);
     AsyncStorage.setItem("ap:auth:expiryDate", expiryDate.toString());
     AsyncStorage.setItem("ap:auth:refreshToken", refreshToken);
+    AsyncStorage.setItem("ap:auth:color", color);
+    AsyncStorage.setItem("ap:auth:username", username);
+    AsyncStorage.setItem("ap:auth:email", email);
+    AsyncStorage.setItem("ap:auth:id", id);
   };
 };
 
@@ -141,7 +125,11 @@ export const authGetToken = () => {
   return (dispatch, getState) => {
     const promise = new Promise((resolve, reject) => {
       const token = getState().auth.token;
-      const expiryDate = getState().auth.expiryDate;
+      let expiryDate = getState().auth.expiryDate;
+      let color = getState().auth.color;
+      let email = getState().auth.email;
+      let username = getState().auth.username;
+      let id = getState().auth.id;
 
       if (!token || new Date(expiryDate) <= new Date()) {
         let fetchedToken;
@@ -153,9 +141,14 @@ export const authGetToken = () => {
               reject();
               return;
             }
-            return AsyncStorage.getItem("ap:auth:expiryDate");
+            return AsyncStorage.multiGet(["ap:auth:expiryDate", "ap:auth:color", "ap:auth:email", "ap:auth:username", "ap:auth:id"])
           })
-          .then(expiryDate => {
+          .then(response => {
+            expiryDate = response[0][1]
+            color = response[1][1]
+            email = response[2][1]
+            username = response[3][1]
+            id = response[4][1]
             const parsedExpiryDate = new Date(parseInt(expiryDate));
             const now = new Date();
             if (parsedExpiryDate > now) {
@@ -217,6 +210,10 @@ export const authClearStorage = () => {
   return dispatch => {
     AsyncStorage.removeItem("ap:auth:token");
     AsyncStorage.removeItem("ap:auth:expiryDate");
+    AsyncStorage.removeItem("ap:auth:color");
+    AsyncStorage.removeItem("ap:auth:email");
+    AsyncStorage.removeItem("ap:auth:id");
+    AsyncStorage.removeItem("ap:auth:username");
     return AsyncStorage.removeItem("ap:auth:refreshToken");
   }
 }

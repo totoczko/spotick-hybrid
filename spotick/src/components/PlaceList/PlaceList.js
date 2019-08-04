@@ -13,6 +13,7 @@ const PlaceList = (props) => {
           placeDate={info.item.data}
           placeLocation={info.item.geo}
           placeImage={info.item.img}
+          placeUser={info.item.user}
           onItemPressed={() => props.onItemSelected(info.item.key)}
         />
       )}

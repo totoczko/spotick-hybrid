@@ -87,6 +87,17 @@ class SharePlaceScreen extends Component {
         }
       )
     }
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        user: {
+          color: this.props.user.color,
+          id: this.props.user.id,
+          name: this.props.user.username
+        }
+      }
+    })
   }
 
   getCity(lat, long) {
@@ -121,7 +132,8 @@ class SharePlaceScreen extends Component {
       this.state.controls.placeText.value,
       this.state.controls.location.value,
       this.state.controls.img.value,
-      date
+      date,
+      this.state.user
     );
     this.reset()
     this.imagePicker.reset()
@@ -214,7 +226,7 @@ class SharePlaceScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddPlace: (placeText, location, img, date) => dispatch(addPlace(placeText, location, img, date)),
+    onAddPlace: (placeText, location, img, date, user) => dispatch(addPlace(placeText, location, img, date, user)),
     onStartAddPlace: () => dispatch(startAddPlace())
   }
 }
@@ -222,7 +234,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
   return {
     isLoading: state.ui.isLoading,
-    placeAdded: state.places.placeAdded
+    placeAdded: state.places.placeAdded,
+    user: state.auth
   }
 }
 

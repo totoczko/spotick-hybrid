@@ -11,9 +11,9 @@ const ListItem = (props) => {
     <TouchableNativeFeedback onPress={props.onItemPressed}>
       <View style={styles.listItem} >
         <View style={styles.listItemHead}>
-          <View style={styles.avatar}><Text style={styles.avatarText}>P</Text></View>
+          <View style={[styles.avatar, { backgroundColor: props.placeUser.color }]}><Text style={styles.avatarText}>{props.placeUser.name.charAt(0)}</Text></View>
           <View style={styles.listItemInfo}>
-            <View><Text>lolo</Text></View>
+            <View><Text>{props.placeUser.name}</Text></View>
             <View><Text>{formatData(props.placeDate)}</Text></View>
           </View>
         </View>
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     padding: 15
   },
   avatar: {
-    backgroundColor: "red",
     borderRadius: 50,
     width: 40,
     height: 40,
@@ -64,7 +63,8 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   avatarText: {
-    color: "#fff"
+    color: "#fff",
+    textTransform: "uppercase"
   },
   listItemInfo: {
     flex: 1

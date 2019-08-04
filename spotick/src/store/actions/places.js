@@ -8,7 +8,7 @@ export const startAddPlace = () => {
   }
 }
 
-export const addPlace = (placeText, location, img, date) => {
+export const addPlace = (placeText, location, img, date, user) => {
   // return {
   //   type: ADD_PLACE,
   //   placeText: placeText,
@@ -56,7 +56,8 @@ export const addPlace = (placeText, location, img, date) => {
           img: parsedRes.imageUrl,
           imageid: parsedRes.imageid,
           data: date,
-          id: id
+          id: id,
+          user: user
         }
         return fetch("https://awesome-places-247312.firebaseio.com/places/" + id + ".json?auth=" + authToken, {
           method: 'PUT',
