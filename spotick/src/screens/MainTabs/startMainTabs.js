@@ -7,7 +7,8 @@ const startTabs = () => {
     Icon.getImageSource(Platform.OS === 'android' ? "md-home" : "ios-home", 30),
     Icon.getImageSource(Platform.OS === 'android' ? "md-add" : "ios-add", 30),
     Icon.getImageSource(Platform.OS === 'android' ? "md-person" : "ios-person", 30),
-    Icon.getImageSource(Platform.OS === 'android' ? "md-menu" : "ios-menu", 30)
+    Icon.getImageSource(Platform.OS === 'android' ? "md-menu" : "ios-menu", 30),
+    Icon.getImageSource(Platform.OS === 'android' ? "md-settings" : "ios-settings", 30)
   ]).then(sources => {
     Navigation.startTabBasedApp({
       tabs: [
@@ -51,6 +52,13 @@ const startTabs = () => {
                 title: "Menu",
                 id: "sideDrawerToggle"
               }
+            ],
+            rightButtons: [
+              {
+                icon: sources[4],
+                title: "Ustawienia",
+                id: "settingsToggle"
+              }
             ]
           }
         }
@@ -65,6 +73,9 @@ const startTabs = () => {
       drawer: {
         left: {
           screen: "awesome-places.SideDrawer"
+        },
+        right: {
+          screen: "awesome-places.Settings"
         }
       }
     });

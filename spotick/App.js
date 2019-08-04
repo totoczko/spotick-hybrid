@@ -5,6 +5,7 @@ import SharePlaceScreen from './src/screens/SharePlace/SharePlace'
 import FindPlaceScreen from './src/screens/FindPlace/FindPlace'
 import PlaceDetailScreen from './src/screens/PlaceDetail/PlaceDetail'
 import SideDrawer from './src/screens/SideDrawer/SideDrawer'
+import Settings from './src/screens/Settings/Settings'
 import configureStore from './src/store/configureStore'
 import UserScreen from './src/screens/User/User';
 
@@ -16,6 +17,7 @@ Navigation.registerComponent("awesome-places.SharePlaceScreen", () => SharePlace
 Navigation.registerComponent("awesome-places.FindPlaceScreen", () => FindPlaceScreen, store, Provider);
 Navigation.registerComponent("awesome-places.PlaceDetailScreen", () => PlaceDetailScreen, store, Provider);
 Navigation.registerComponent("awesome-places.SideDrawer", () => SideDrawer, store, Provider);
+Navigation.registerComponent("awesome-places.Settings", () => Settings, store, Provider);
 Navigation.registerComponent("awesome-places.UserScreen", () => UserScreen, store, Provider);
 
 // Start an app
