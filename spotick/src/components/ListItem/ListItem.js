@@ -11,7 +11,7 @@ const ListItem = (props) => {
     <TouchableNativeFeedback onPress={props.onItemPressed}>
       <View style={styles.listItem} >
         <View style={styles.listItemHead}>
-          <View style={[styles.avatar, { backgroundColor: props.placeUser.color }]}><Text style={styles.avatarText}>{props.placeUser.name.charAt(0)}</Text></View>
+          <View style={[styles.avatar, { backgroundColor: props.placeUser.color }]}><Text style={styles.avatarText}>{props.placeUser.name ? props.placeUser.name.charAt(0) : ''}</Text></View>
           <View style={styles.listItemInfo}>
             <View><Text>{props.placeUser.name}</Text></View>
             <View><Text>{formatData(props.placeDate)}</Text></View>
