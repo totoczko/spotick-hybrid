@@ -207,7 +207,6 @@ class AuthScreen extends Component {
             onChangeText={val => this.updateInputState("username", val)}
             valid={this.state.controls.username.valid}
             touched={this.state.controls.username.touched}
-            secureTextEntry
           />
         </View>
       );

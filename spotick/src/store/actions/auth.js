@@ -94,6 +94,98 @@ export const tryAuth = (authData, authMode) => {
   };
 };
 
+export const changeUserData = (key, value) => {
+  return (dispatch, getState) => {
+    dispatch(uiStartLoading());
+    // dispatch(updateToken());
+    let url =
+      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=" +
+      API_KEY;
+    let body = {}
+    if (key === "email") {
+      body = {
+        idToken: getState().auth.token,
+        email: value,
+        returnSecureToken: true
+      }
+    } else if (key === "username") {
+      body = {
+        idToken: getState().auth.token,
+        displayName: value,
+      }
+    } else {
+      body = {
+        idToken: getState().auth.token,
+        password: value,
+        returnSecureToken: true
+      }
+    }
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .catch(err => {
+        console.log(err);
+        alert("Authentication failed, please try again!");
+        dispatch(uiStopLoading());
+      })
+      .then(res => res.json())
+      .then(parsedRes => {
+        dispatch(uiStopLoading());
+        console.log(parsedRes);
+        if (!parsedRes.idToken) {
+          fetch("https://awesome-places-247312.firebaseio.com/users/" + parsedRes.localId + ".json?auth=" + getState().auth.token, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              displayName: parsedRes.displayName
+            })
+          })
+            .then(res => res.json())
+            .then(parsedRes => {
+              console.log(parsedRes)
+              dispatch(authStoreToken(getState().auth.token, getState().auth.color, parsedRes.displayName, getState().auth.email, getState().auth.id, getState().auth.expiresIn));
+              alert('Dane zostały zapisane!')
+            })
+            .catch(err => {
+              console.log(err)
+              alert('something went wrong!')
+              dispatch(uiStopLoading())
+            })
+        } else {
+          loginRes = parsedRes;
+          let upd_body = {}
+          if (key == "email") {
+            upd_body = {
+              email: parsedRes.email
+            }
+          } else {
+            upd_body = {
+              password: parsedRes.password
+            }
+          }
+          fetch("https://awesome-places-247312.firebaseio.com/users/" + parsedRes.localId + ".json?auth=" + parsedRes.idToken, {
+            method: 'PATCH',
+            body: JSON.stringify(upd_body)
+          })
+            .then(res => res.json())
+            .then(parsedRes => {
+              console.log(parsedRes)
+              dispatch(authStoreToken(loginRes.idToken, getState().auth.color, getState().auth.username, parsedRes.email, getState().auth.id, loginRes.expiresIn, loginRes.refreshToken))
+              alert('Dane zostały zapisane!')
+            })
+            .catch(err => {
+              console.log(err)
+              alert('something went wrong!')
+              dispatch(uiStopLoading())
+            })
+        }
+      });
+  };
+};
+
 export const authStoreToken = (token, color, username, email, id, expiresIn, refreshToken) => {
   return dispatch => {
     const now = new Date();
@@ -195,6 +287,32 @@ export const authGetToken = () => {
       })
   };
 };
+
+// export const updateToken = () => {
+//   return (dispatch, getState) => {
+//     AsyncStorage.getItem("ap:auth:refreshToken")
+//       .then(refreshToken => {
+//         console.log(refreshToken)
+//         return fetch("https://securetoken.googleapis.com/v1/token?key=" + API_KEY, {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/x-www-form-urlencoded"
+//           },
+//           body: "grant_type=refresh_token&refresh_token=" + refreshToken
+//         })
+//       })
+//       .then(res => res.json())
+//       .then(parsedRes => {
+//         if (parsedRes.id_token) {
+//           console.log("refresh token worked")
+//           dispatch(authStoreToken(parsedRes.id_token, getState().auth.color, getState().auth.username, getState().auth.email, getState().auth.id, parsedRes.expires_in, parsedRes.refresh_token))
+//           return parsedRes.id_token
+//         } else {
+//           console.log("refresh token didnt worked")
+//         }
+//       })
+//   };
+// };
 
 export const authAutoSignIn = () => {
   return dispatch => {

@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Switch } from 'react-native'
 import { connect } from 'react-redux'
 import { authLogout } from '../../store/actions/index'
-import DefaultInput from '../UI/DefaultInput/DefaultInput';
+import DefaultInput from '../../components/UI/DefaultInput/DefaultInput';
+import ButtonPlain from '../../components/UI/ButtonPlain/ButtonPlain';
+import validate from "../../utility/validation";
+import { changeUserData } from "../../store/actions/index";
 
 class Settings extends Component {
   state = {
@@ -39,8 +42,44 @@ class Settings extends Component {
         },
         touched: false
       }
-    }
+    },
+    notifications: false
   };
+
+  componentDidMount() {
+    this.setState(prevState => {
+      return {
+        controls: {
+          ...prevState.controls,
+          email: {
+            ...prevState.controls.email,
+            value: this.props.user.email
+          },
+          username: {
+            ...prevState.controls.username,
+            value: this.props.user.username
+          }
+        }
+      }
+    })
+  }
+
+  handleUpdateData = (key, value) => {
+    let valid = false;
+    if (key === 'password') {
+      valid = this.state.controls.password.valid && this.state.controls.confirmPassword.valid
+    } else if (key === 'email') {
+      valid = this.state.controls.email.valid
+    } else if (key === 'username') {
+      valid = this.state.controls.username.valid
+    }
+
+    if (valid) {
+      this.props.changeUserData(key, value);
+    } else {
+      console.log("not valid data")
+    }
+  }
 
   updateInputState = (key, value) => {
     let connectedValue = {};
@@ -88,32 +127,84 @@ class Settings extends Component {
     });
   };
 
+  switchNotifications = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        notifications: !prevState.notifications
+      }
+    })
+  }
+
   render() {
     return (
       <View style={[styles.container, { width: Dimensions.get("window").width }]} >
-        <TouchableOpacity onPress={this.props.onLogout}>
-          <View style={styles.drawerItem}>
-            <Text>Login</Text>
+        <View style={styles.drawerItem}>
+          <Text>Login</Text>
+          <View style={styles.inputContainer}>
             <DefaultInput
-              placeholder="Email"
+              placeholder="Wpisz login"
+              value={this.state.controls.username.value}
+              onChangeText={val => this.updateInputState("username", val)}
+              valid={this.state.controls.username.valid}
+              touched={this.state.controls.username.touched}
+            />
+            <ButtonPlain
+              color="#3f51b5"
+              onPress={() => this.handleUpdateData('username', this.state.controls.username.value)}
+            >Zapisz</ButtonPlain>
+          </View>
+        </View>
+        <View style={styles.drawerItem}>
+          <Text>Email</Text>
+          <View style={styles.inputContainer}>
+            <DefaultInput
+              placeholder="Wpisz email"
               value={this.state.controls.email.value}
               onChangeText={val => this.updateInputState("email", val)}
               valid={this.state.controls.email.valid}
               touched={this.state.controls.email.touched}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="email-address"
             />
+            <ButtonPlain
+              color="#3f51b5"
+              onPress={() => this.handleUpdateData('email', this.state.controls.email.value)}
+            >Zapisz</ButtonPlain>
           </View>
-          <View style={styles.drawerItem}>
-            <Text>Email</Text>
+        </View>
+        <View style={[styles.drawerItem, { height: 200 }]}>
+          <Text>Hasło</Text>
+          <View style={styles.inputContainer}>
+            <View style={styles.passwordContainer}>
+              <DefaultInput
+                placeholder="Wpisz hasło"
+                value={this.state.controls.password.value}
+                onChangeText={val => this.updateInputState("password", val)}
+                valid={this.state.controls.password.valid}
+                touched={this.state.controls.password.touched}
+                secureTextEntry
+              />
+              <DefaultInput
+                placeholder="Potwierdź hasło"
+                value={this.state.controls.confirmPassword.value}
+                onChangeText={val => this.updateInputState("confirmPassword", val)}
+                valid={this.state.controls.confirmPassword.valid}
+                touched={this.state.controls.confirmPassword.touched}
+                secureTextEntry
+              />
+            </View>
+            <ButtonPlain
+              color="#3f51b5"
+              onPress={() => this.handleUpdateData('password', this.state.controls.password.value)}
+            >Zapisz</ButtonPlain>
           </View>
-          <View style={styles.drawerItem}>
-            <Text>Hasło</Text>
-          </View>
-          <View style={styles.drawerItem}>
+        </View>
+        <View style={styles.drawerItem}>
+          <View style={styles.switchContainer}>
             <Text>Powiadomienia</Text>
+            <Switch trackColor={{ false: "#999", true: "#FF0266" }} thumbColor="#FF0266" value={this.state.notifications} onChange={this.switchNotifications} />
           </View>
+        </View>
+        <TouchableOpacity onPress={this.props.onLogout}>
           <View style={styles.drawerItem}>
             <Text style={{ color: "red", textTransform: "uppercase" }}>Wyloguj się</Text>
           </View>
@@ -131,20 +222,45 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   drawerItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingBottom: 20,
-    paddingLeft: 20
+    flexDirection: "column",
+    padding: 20
   },
   drawerItemIcon: {
     margin: 10
+  },
+  inputContainer: {
+    flexDirection: "row",
+    flex: 1,
+    width: '80%',
+    marginBottom: 30,
+    justifyContent: 'space-between'
+  },
+  switchContainer: {
+    flexDirection: "row",
+    flex: 1,
+    width: '100%',
+    justifyContent: 'space-between'
+  },
+  passwordContainer: {
+    flexDirection: "column",
+    width: '100%',
+    marginBottom: 80,
+    paddingBottom: 50,
+    height: 200
   }
 })
 
+const mapStateToProps = state => {
+  return {
+    user: state.auth
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
-    onLogout: () => dispatch(authLogout())
+    onLogout: () => dispatch(authLogout()),
+    changeUserData: (key, value) => dispatch(changeUserData(key, value))
   }
 }
 
-export default connect(null, mapDispatchToProps)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

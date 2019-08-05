@@ -1,5 +1,5 @@
 // export { addPlace, deletePlace, selectPlace, deselectPlace } from './places';
 
 export { addPlace, deletePlace, getPlaces, startAddPlace, placeAdded } from './places';
-export { tryAuth, authGetToken, authAutoSignIn, authLogout } from './auth'
+export { tryAuth, changeUserData, authGetToken, authAutoSignIn, authLogout } from './auth'
 export { uiStartLoading, uiStopLoading } from './ui'
