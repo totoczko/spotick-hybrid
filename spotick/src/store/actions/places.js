@@ -1,4 +1,4 @@
-import { SET_PLACES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from './actionTypes'
+import { SET_PLACES, SET_LIKES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from './actionTypes'
 import { uiStartLoading, uiStopLoading, authGetToken } from './index'
 const uuid = require('uuid/v4');
 
@@ -7,6 +7,60 @@ export const startAddPlace = () => {
     type: START_ADD_PLACE
   }
 }
+
+export const likePlace = (postId, likes) => {
+  return (dispatch, getState) => {
+    const userId = getState().auth.id
+    let countUpd = likes.count;
+    let usersUpd = likes.users ? likes.users : [];
+    const likeIndex = usersUpd.indexOf(userId);
+    if (likeIndex < 0) {
+      countUpd++;
+      usersUpd.push(userId);
+    } else {
+      countUpd--;
+      usersUpd.splice(likeIndex, 1)
+    }
+
+    const placeData = {
+      likes: {
+        count: countUpd,
+        users: usersUpd
+      }
+    }
+
+    let authToken;
+    dispatch(uiStartLoading());
+    dispatch(authGetToken())
+      .catch(() => {
+        alert("No valid token found!")
+      })
+      .then(token => {
+        authToken = token;
+      })
+      .catch(err => {
+        console.log(err)
+        alert('something went wrong!')
+        dispatch(uiStopLoading())
+      })
+      .then(parsedRes => {
+        return fetch("https://awesome-places-247312.firebaseio.com/places/" + postId + ".json?auth=" + authToken, {
+          method: 'PATCH',
+          body: JSON.stringify(placeData)
+        })
+      })
+      .then(parsedRes => {
+        dispatch(setLikes(postId, placeData.likes))
+        dispatch(uiStopLoading())
+      })
+      .catch(err => {
+        console.log(err)
+        alert('something went wrong!')
+        dispatch(uiStopLoading())
+      })
+  }
+}
+
 
 export const addPlace = (placeText, location, img, date, user) => {
   // return {
@@ -57,7 +111,11 @@ export const addPlace = (placeText, location, img, date, user) => {
           imageid: parsedRes.imageid,
           data: date,
           id: id,
-          user: user
+          user: user,
+          likes: {
+            count: 0,
+            users: []
+          }
         }
         return fetch("https://awesome-places-247312.firebaseio.com/places/" + id + ".json?auth=" + authToken, {
           method: 'PUT',
@@ -95,6 +153,14 @@ export const setPlaces = places => {
   return {
     type: SET_PLACES,
     places: places
+  }
+}
+
+export const setLikes = (placeId, likes) => {
+  return {
+    type: SET_LIKES,
+    placeId: placeId,
+    likes: likes
   }
 }
 

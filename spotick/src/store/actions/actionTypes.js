@@ -4,6 +4,7 @@
 // export const DESELECT_PLACE = 'DESELECT_PLACE';
 
 export const SET_PLACES = 'SET_PLACES';
+export const SET_LIKES = 'SET_LIKES';
 export const REMOVE_PLACE = 'REMOVE_PLACE';
 
 export const TRY_AUTH = 'TRY_AUTH';

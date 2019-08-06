@@ -3,6 +3,7 @@ import { View, StyleSheet, Animated, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import PlaceList from '../../components/PlaceList/PlaceList'
 import { getPlaces } from '../../store/actions/index'
+import { likePlace } from '../../store/actions/places';
 
 class FindPlaceScreen extends Component {
   static navigatorStyle = {
@@ -62,6 +63,14 @@ class FindPlaceScreen extends Component {
     })
   }
 
+  itemLikeHandler = key => {
+    const selPlace = this.props.places.find(place => {
+      return place.key === key
+    })
+    console.log(selPlace.id)
+    this.props.onLikePlace(selPlace.id, selPlace.likes)
+  }
+
   placesLoadedHandler = () => {
     Animated.timing(this.state.placesAnim, {
       toValue: 1,
@@ -76,7 +85,7 @@ class FindPlaceScreen extends Component {
         <Animated.View style={{
           opacity: this.state.placesAnim
         }}>
-          <PlaceList places={this.props.places} onItemSelected={this.itemSelectedHandler} />
+          <PlaceList places={this.props.places} userId={this.props.auth.id} onItemSelected={this.itemSelectedHandler} onLikePressed={this.itemLikeHandler} />
         </Animated.View>
       ) : <ActivityIndicator />}
     </View>
@@ -85,7 +94,8 @@ class FindPlaceScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    places: state.places.places
+    places: state.places.places,
+    auth: state.auth
   }
 }
 
@@ -97,8 +107,10 @@ const styles = StyleSheet.create({
   }
 })
 
+
 const mapDispatchToProps = dispatch => {
   return {
+    onLikePlace: (placeId, likes) => dispatch(likePlace(placeId, likes)),
     onLoadPlaces: () => dispatch(getPlaces())
   }
 }

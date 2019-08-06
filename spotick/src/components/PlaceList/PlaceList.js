@@ -14,7 +14,10 @@ const PlaceList = (props) => {
           placeLocation={info.item.geo}
           placeImage={info.item.img}
           placeUser={info.item.user}
+          placeLikes={info.item.likes}
+          userId={props.userId}
           onItemPressed={() => props.onItemSelected(info.item.key)}
+          onLikePressed={() => props.onLikePressed(info.item.key)}
         />
       )}
     />

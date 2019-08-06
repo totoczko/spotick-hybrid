@@ -1,6 +1,6 @@
 // import { ADD_PLACE, DELETE_PLACE, SELECT_PLACE, DESELECT_PLACE } from '../actions/actionTypes'
 // import { ADD_PLACE, DELETE_PLACE } from '../actions/actionTypes'
-import { SET_PLACES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from '../actions/actionTypes'
+import { SET_PLACES, SET_LIKES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from '../actions/actionTypes'
 
 const initialState = {
   places: [],
@@ -26,6 +26,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         places: action.places
+      }
+    case SET_LIKES:
+      const index = state.places.findIndex(place => {
+        return place.id === action.placeId;
+      })
+      let placesUpd = [...state.places]
+      placesUpd[index].likes = action.likes
+      return {
+        ...state,
+        places: placesUpd
       }
     case REMOVE_PLACE:
       return {
