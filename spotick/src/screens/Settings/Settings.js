@@ -6,6 +6,7 @@ import DefaultInput from '../../components/UI/DefaultInput/DefaultInput';
 import ButtonPlain from '../../components/UI/ButtonPlain/ButtonPlain';
 import validate from "../../utility/validation";
 import { changeUserData } from "../../store/actions/index";
+import firebase from 'react-native-firebase';
 
 class Settings extends Component {
   state = {
@@ -128,6 +129,25 @@ class Settings extends Component {
   };
 
   switchNotifications = () => {
+    if (!this.state.notifications) {
+      firebase.messaging().hasPermission()
+        .then(enabled => {
+          if (enabled) {
+            // user has permissions
+          } else {
+            firebase.messaging().requestPermission()
+              .then(() => {
+                // User has authorised  
+                alert('udzielono!')
+              })
+              .catch(error => {
+                // User has rejected permissions  
+                alert('buu, nie udzielono!')
+              });
+          }
+        });
+
+    }
     this.setState(prevState => {
       return {
         ...prevState,

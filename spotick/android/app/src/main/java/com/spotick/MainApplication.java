@@ -13,6 +13,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.imagepicker.ImagePickerPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
  
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,8 @@ public class MainApplication extends NavigationApplication {
       new MapsPackage(),
       new ImagePickerPackage(),
       new RNFirebasePackage(),
-      new RNFirebaseMessagingPackage() 
+      new RNFirebaseMessagingPackage() ,
+      new RNFirebaseNotificationsPackage()
     );
   }
  
