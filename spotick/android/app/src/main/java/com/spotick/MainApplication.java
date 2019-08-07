@@ -3,6 +3,7 @@ package com.spotick;
 import android.app.Application;
  
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -29,7 +30,8 @@ public class MainApplication extends NavigationApplication {
     return Arrays.<ReactPackage>asList(
       new VectorIconsPackage(),
       new MapsPackage(),
-      new ImagePickerPackage()
+      new ImagePickerPackage(),
+      new RNFirebasePackage()
     );
   }
  
@@ -63,12 +65,12 @@ public class MainApplication extends NavigationApplication {
 //       return BuildConfig.DEBUG;
 //     }
 
-//     @Override
-//     protected List<ReactPackage> getPackages() {
-//       return Arrays.<ReactPackage>asList(
-//           new MainReactPackage()
-//       );
-//     }
+    // @Override
+    // protected List<ReactPackage> getPackages() {
+      // return Arrays.<ReactPackage>asList(
+          // new MainReactPackage()
+      // );
+    // }
 
 //     @Override
 //     protected String getJSMainModuleName() {
