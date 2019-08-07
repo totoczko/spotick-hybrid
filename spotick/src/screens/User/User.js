@@ -105,9 +105,8 @@ class UserScreen extends Component {
             <View><Text>{this.props.user.email}</Text></View>
           </View>
         </View>
+        <TabsSwitch items={tabItems} active={this.state.activeTab} handleTabClick={this.handleTabClick} />
         <View>
-          <TabsSwitch items={tabItems} active={this.state.activeTab} handleTabClick={this.handleTabClick} />
-
           {this.state.placesLoaded ? (
             <Animated.View style={{
               opacity: this.state.placesAnim

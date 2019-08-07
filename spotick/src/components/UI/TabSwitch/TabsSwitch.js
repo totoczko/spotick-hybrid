@@ -17,11 +17,10 @@ const TabsSwitch = (props) => {
 
 const styles = StyleSheet.create({
   switch: {
-    marginTop: 5,
+    marginTop: 0,
     marginBottom: 0,
     borderWidth: 0,
     backgroundColor: "#fff",
-    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

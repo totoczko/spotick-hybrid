@@ -11,7 +11,8 @@ const gcconfig = {
 const gcs = require("@google-cloud/storage")(gcconfig);
 
 admin.initializeApp({
-  credential: admin.credential.cert(require("./awesome-places.json"))
+  credential: admin.credential.cert(require("./awesome-places.json")),
+  databaseURL: "https://awesome-places-247312.firebaseio.com"
 })
 
 // // Create and Deploy Your First Cloud Functions
@@ -77,3 +78,28 @@ exports.deleteImage = functions.database.ref("/places/{placeId}").onDelete(snaps
   const bucket = gcs.bucket("awesome-places-247312.appspot.com")
   return bucket.file("/places/" + imageId + '.jpg').delete()
 })
+
+exports.sendNotification = functions.database.ref("/places/{postUid}")
+  .onWrite(async (change, context) => {
+    // Path segment values are read from event.params
+    const postUid = context.params.postUid;
+    console.log('We have a new post UID:', postUid);
+
+    // Get the follower profile.
+    const getPostPromise = admin.database().ref(`/places/${postUid}`).once('value');
+
+    const results = await Promise.all([getPostPromise]);
+    const post = results[0].val();
+
+    const payload = {
+      notification: {
+        title: "Nowy post!",
+        body: "Na Spotick pojawił się nowy post od " + post.user.name + "!"
+      }
+    };
+
+    return admin.messaging()
+      .sendToTopic(`/topics/newPost`, payload)
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  });
