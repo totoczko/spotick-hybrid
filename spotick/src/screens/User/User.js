@@ -92,7 +92,7 @@ class UserScreen extends Component {
     const userLikes = (places, userId) => {
       let list = []
       places.map((place) => {
-        userId === place.user.id ? list.push(place) : null
+        place.likes.users && place.likes.users.indexOf(userId) >= 0 ? list.push(place) : null
       })
       return list
     }
@@ -125,7 +125,7 @@ class UserScreen extends Component {
                   />
                 ) : (
                     <FlatList
-                      data={userPlaces(this.props.places, this.props.user.id)}
+                      data={userLikes(this.props.places, this.props.user.id)}
                       renderItem={({ item }) => (
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                           <Image style={styles.imageThumbnail} source={item.img} />

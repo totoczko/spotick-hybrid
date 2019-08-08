@@ -63,6 +63,13 @@ class Settings extends Component {
         }
       }
     })
+    this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(fcmToken => {
+      // Process your token as required
+    });
+  }
+
+  componentWillUnmount() {
+    this.onTokenRefreshListener();
   }
 
   handleUpdateData = (key, value) => {
@@ -130,20 +137,14 @@ class Settings extends Component {
 
   switchNotifications = () => {
     if (!this.state.notifications) {
-      firebase.messaging().hasPermission()
-        .then(enabled => {
-          if (enabled) {
-            // user has permissions
+      firebase.messaging().getToken()
+        .then(fcmToken => {
+          if (fcmToken) {
+            alert(fcmToken)
+            // user has a device token
           } else {
-            firebase.messaging().requestPermission()
-              .then(() => {
-                // User has authorised  
-                alert('udzielono!')
-              })
-              .catch(error => {
-                // User has rejected permissions  
-                alert('buu, nie udzielono!')
-              });
+            // user doesn't have a device token yet
+            alert('error')
           }
         });
 
