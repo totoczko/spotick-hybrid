@@ -16,9 +16,13 @@ const ListItem = (props) => {
           <View><Text>{formatData(props.placeDate)}</Text></View>
         </View>
       </View>
-      <TouchableNativeFeedback onPress={props.onItemPressed}>
-        <Image source={props.placeImage} style={styles.placeImage} />
-      </TouchableNativeFeedback>
+      {props.onItemPressed ? (
+        <TouchableNativeFeedback onPress={props.onItemPressed}>
+          <Image source={props.placeImage} style={styles.placeImage} />
+        </TouchableNativeFeedback>
+      ) : (
+          <Image source={props.placeImage} style={styles.placeImage} />
+        )}
       <View style={styles.listItemBottom}>
         <View style={styles.bottomLeft}>
           <View style={{ flexDirection: "row" }}>

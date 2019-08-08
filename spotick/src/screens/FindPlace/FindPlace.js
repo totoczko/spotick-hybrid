@@ -50,7 +50,7 @@ class FindPlaceScreen extends Component {
     }
   }
 
-  itemSelectedHandler = key => {
+  itemSelectedHandler = (key, onLikePressed, userId) => {
     const selPlace = this.props.places.find(place => {
       return place.key === key
     })
@@ -58,7 +58,9 @@ class FindPlaceScreen extends Component {
       screen: "awesome-places.PlaceDetailScreen",
       title: selPlace.shortText,
       passProps: {
-        selectedPlace: selPlace
+        selectedPlace: selPlace,
+        onLikePressed: onLikePressed,
+        userId: userId
       }
     })
   }
@@ -67,7 +69,6 @@ class FindPlaceScreen extends Component {
     const selPlace = this.props.places.find(place => {
       return place.key === key
     })
-    console.log(selPlace.id)
     this.props.onLikePlace(selPlace.id, selPlace.likes)
   }
 

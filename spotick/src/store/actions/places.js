@@ -1,5 +1,6 @@
 import { SET_PLACES, SET_LIKES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from './actionTypes'
 import { uiStartLoading, uiStopLoading, authGetToken } from './index'
+import { sortPosts } from '../../utility/sortPosts';
 const uuid = require('uuid/v4');
 
 export const startAddPlace = () => {
@@ -182,6 +183,7 @@ export const getPlaces = () => {
       })
       .then(parsedRes => {
         const places = []
+        let itemsSorted = [];
         for (let key in parsedRes) {
           places.push({
             ...parsedRes[key],
@@ -191,6 +193,8 @@ export const getPlaces = () => {
             key: key
           })
         }
+        let placesSorted = places.sort(sortPosts)
+        itemsSorted.push(placesSorted)
         dispatch(setPlaces(places))
       })
       .catch(err => {

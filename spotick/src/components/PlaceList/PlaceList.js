@@ -16,7 +16,7 @@ const PlaceList = (props) => {
           placeUser={info.item.user}
           placeLikes={info.item.likes}
           userId={props.userId}
-          onItemPressed={() => props.onItemSelected(info.item.key)}
+          onItemPressed={() => props.onItemSelected(info.item.key, props.onLikePressed, props.userId)}
           onLikePressed={() => props.onLikePressed(info.item.key)}
         />
       )}

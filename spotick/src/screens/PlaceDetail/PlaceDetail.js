@@ -5,33 +5,16 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Platform,
-  Dimensions
+  Platform
 } from "react-native";
 import { connect } from "react-redux";
-import MapView from "react-native-maps";
 
 import Icon from "react-native-vector-icons/Ionicons";
 import { deletePlace } from "../../store/actions/index";
+import ListItem from "../../components/ListItem/ListItem";
 
 class PlaceDetail extends Component {
   state = {
-    viewMode: "portrait"
-  };
-
-  constructor(props) {
-    super(props);
-    Dimensions.addEventListener("change", this.updateStyles);
-  }
-
-  componentWillUnmount() {
-    Dimensions.removeEventListener("change", this.updateStyles);
-  }
-
-  updateStyles = dims => {
-    this.setState({
-      viewMode: dims.window.height > 500 ? "portrait" : "landscape"
-    });
   };
 
   placeDeletedHandler = () => {
@@ -44,32 +27,25 @@ class PlaceDetail extends Component {
       <View
         style={[
           styles.container,
-          this.state.viewMode === "portrait"
-            ? styles.portraitContainer
-            : styles.landscapeContainer
+          styles.portraitContainer
         ]}
       >
+        <ListItem
+          placeText={this.props.selectedPlace.shortText}
+          placeDate={this.props.selectedPlace.data}
+          placeLocation={this.props.selectedPlace.geo}
+          placeImage={this.props.selectedPlace.img}
+          placeUser={this.props.selectedPlace.user}
+          placeLikes={this.props.selectedPlace.likes}
+          userId={this.props.userId}
+          onLikePressed={() => this.props.onLikePressed(this.props.selectedPlace.key)}
+        />
         <View style={styles.placeDetailContainer}>
           <View style={styles.subContainer}>
             <Image
               source={this.props.selectedPlace.img}
               style={styles.placeImage}
             />
-          </View>
-          <View style={styles.subContainer}>
-            <MapView
-              initialRegion={{
-                ...this.props.selectedPlace.location,
-                latitudeDelta: 0.0122,
-                longitudeDelta:
-                  Dimensions.get("window").width /
-                  Dimensions.get("window").height *
-                  0.0122
-              }}
-              style={styles.map}
-            >
-              <MapView.Marker coordinate={this.props.selectedPlace.location} />
-            </MapView>
           </View>
         </View>
         <View style={styles.subContainer}>
@@ -103,9 +79,6 @@ const styles = StyleSheet.create({
   portraitContainer: {
     flexDirection: "column"
   },
-  landscapeContainer: {
-    flexDirection: "row"
-  },
   placeDetailContainer: {
     flex: 2
   },
@@ -118,14 +91,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 28
   },
-  map: {
-    ...StyleSheet.absoluteFillObject
-  },
   deleteButton: {
     alignItems: "center"
-  },
-  subContainer: {
-    flex: 1
   }
 });
 
