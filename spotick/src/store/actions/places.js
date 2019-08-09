@@ -34,14 +34,13 @@ export const likePlace = (postId, likes) => {
     dispatch(uiStartLoading());
     dispatch(authGetToken())
       .catch(() => {
-        alert("No valid token found!")
+        console.log("No valid token found!")
       })
       .then(token => {
         authToken = token;
       })
       .catch(err => {
         console.log(err)
-        alert('something went wrong!')
         dispatch(uiStopLoading())
       })
       .then(parsedRes => {
@@ -56,7 +55,6 @@ export const likePlace = (postId, likes) => {
       })
       .catch(err => {
         console.log(err)
-        alert('something went wrong!')
         dispatch(uiStopLoading())
       })
   }
@@ -77,7 +75,7 @@ export const addPlace = (placeText, location, img, date, user) => {
     dispatch(uiStartLoading());
     dispatch(authGetToken())
       .catch(() => {
-        alert("No valid token found!")
+        console.log("No valid token found!")
       })
       .then(token => {
         authToken = token;
@@ -93,7 +91,6 @@ export const addPlace = (placeText, location, img, date, user) => {
       })
       .catch(err => {
         console.log(err)
-        alert('something went wrong!')
         dispatch(uiStopLoading())
       })
       .then(res => {
@@ -138,7 +135,6 @@ export const addPlace = (placeText, location, img, date, user) => {
       })
       .catch(err => {
         console.log(err)
-        alert('something went wrong!')
         dispatch(uiStopLoading())
       })
   }
@@ -172,7 +168,7 @@ export const getPlaces = () => {
         return fetch("https://awesome-places-247312.firebaseio.com/places.json?auth=" + token)
       })
       .catch(() => {
-        alert("No valid token found!")
+        console.log("No valid token found!")
       })
       .then(res => {
         if (res.ok) {
@@ -198,7 +194,6 @@ export const getPlaces = () => {
         dispatch(setPlaces(places))
       })
       .catch(err => {
-        alert('something went wrong!')
         console.log(err)
       })
   }
@@ -208,7 +203,7 @@ export const deletePlace = (key) => {
   return dispatch => {
     dispatch(authGetToken())
       .catch(() => {
-        alert("No valid token found!")
+        console.log("No valid token found!")
       })
       .then(token => {
         dispatch(removePlace(key))
@@ -227,7 +222,6 @@ export const deletePlace = (key) => {
         console.log("done!")
       })
       .catch(err => {
-        alert('something went wrong!')
         console.log(err)
       })
   }

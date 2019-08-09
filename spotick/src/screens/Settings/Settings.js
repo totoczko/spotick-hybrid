@@ -140,11 +140,10 @@ class Settings extends Component {
       firebase.messaging().getToken()
         .then(fcmToken => {
           if (fcmToken) {
-            alert(fcmToken)
             // user has a device token
           } else {
             // user doesn't have a device token yet
-            alert('error')
+
           }
         });
 

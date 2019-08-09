@@ -43,7 +43,6 @@ export const tryAuth = (authData, authMode) => {
     })
       .catch(err => {
         console.log(err);
-        alert("Authentication failed, please try again!");
         dispatch(uiStopLoading());
       })
       .then(res => res.json())
@@ -52,7 +51,7 @@ export const tryAuth = (authData, authMode) => {
         console.log(parsedRes);
         loginRes = parsedRes;
         if (!parsedRes.idToken) {
-          alert("Authentication failed, please try again!");
+          alert("Logowanie nie powiodło się!");
         } else {
           if (authMode === "signup") {
             const userData = {
@@ -73,7 +72,6 @@ export const tryAuth = (authData, authMode) => {
               })
               .catch(err => {
                 console.log(err)
-                alert('something went wrong!')
                 dispatch(uiStopLoading())
               })
           } else {
@@ -85,7 +83,6 @@ export const tryAuth = (authData, authMode) => {
               })
               .catch(err => {
                 console.log(err)
-                alert('something went wrong!')
                 dispatch(uiStopLoading())
               })
           }
@@ -129,7 +126,7 @@ export const changeUserData = (key, value) => {
     })
       .catch(err => {
         console.log(err);
-        alert("Authentication failed, please try again!");
+        alert("Logowanie nie powiodło się!");
         dispatch(uiStopLoading());
       })
       .then(res => res.json())
@@ -151,7 +148,6 @@ export const changeUserData = (key, value) => {
             })
             .catch(err => {
               console.log(err)
-              alert('something went wrong!')
               dispatch(uiStopLoading())
             })
         } else {
@@ -178,7 +174,6 @@ export const changeUserData = (key, value) => {
             })
             .catch(err => {
               console.log(err)
-              alert('something went wrong!')
               dispatch(uiStopLoading())
             })
         }
