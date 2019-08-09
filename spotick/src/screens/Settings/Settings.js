@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Switch } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Switch, AsyncStorage, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { authLogout } from '../../store/actions/index'
 import DefaultInput from '../../components/UI/DefaultInput/DefaultInput';
@@ -63,13 +63,26 @@ class Settings extends Component {
         }
       }
     })
-    this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(fcmToken => {
-      // Process your token as required
-    });
+    this.retrieveTokenFromStorage()
   }
 
+  retrieveTokenFromStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('fcmToken');
+      if (value !== null) {
+        // We have data!!
+        this.setState({
+          notifications: true
+        })
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
   componentWillUnmount() {
-    this.onTokenRefreshListener();
+    this.notificationListener();
+    this.notificationOpenedListener();
   }
 
   handleUpdateData = (key, value) => {
@@ -135,25 +148,77 @@ class Settings extends Component {
     });
   };
 
-  switchNotifications = () => {
-    if (!this.state.notifications) {
-      firebase.messaging().getToken()
-        .then(fcmToken => {
-          if (fcmToken) {
-            // user has a device token
-          } else {
-            // user doesn't have a device token yet
-
-          }
-        });
-
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      this.getToken();
+    } else {
+      this.requestPermission();
     }
+  }
+
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        // user has a device token
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+    firebase.messaging().subscribeToTopic('newPost')
+  }
+
+  async requestPermission() {
+    try {
+      await firebase.messaging().requestPermission();
+      // User has authorised
+      this.getToken();
+    } catch (error) {
+      // User has rejected permissions
+      console.log('permission rejected');
+    }
+  }
+
+  componentDidUpdate(prevState, prevProps) {
+    if (prevState.notifications !== this.state.notifications) {
+      if (this.state.notifications) {
+        this.checkPermission();
+        this.createNotificationListeners();
+      } else {
+        firebase.messaging().unsubscribeFromTopic('newPost')
+      }
+    }
+  }
+
+  switchNotifications = () => {
     this.setState(prevState => {
       return {
         ...prevState,
         notifications: !prevState.notifications
       }
     })
+  }
+
+  async createNotificationListeners() {
+    /*
+    * Triggered when a particular notification has been received in foreground
+    * */
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      const { title, body } = notification;
+      this.showAlert(title, body);
+    });
+
+  }
+
+  showAlert(title, body) {
+    Alert.alert(
+      title, body,
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
   }
 
   render() {

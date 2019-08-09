@@ -99,7 +99,7 @@ exports.sendNotification = functions.database.ref("/places/{postUid}")
     };
 
     return admin.messaging()
-      .sendToTopic(`/topics/newPost`, payload)
+      .sendToTopic(`newPost`, payload)
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
   });
