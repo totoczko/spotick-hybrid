@@ -7,7 +7,6 @@ import { formatData } from '../../utility/formatData';
 // TouchableNativeFeedback only on Android!
 const ListItem = (props) => {
   return (
-
     <View style={styles.listItem} >
       <View style={styles.listItemHead}>
         <View style={[styles.avatar, { backgroundColor: props.placeUser.color }]}><Text style={styles.avatarText}>{props.placeUser.name ? props.placeUser.name.charAt(0) : ''}</Text></View>
@@ -16,13 +15,7 @@ const ListItem = (props) => {
           <View><Text>{formatData(props.placeDate)}</Text></View>
         </View>
       </View>
-      {props.onItemPressed ? (
-        <TouchableNativeFeedback onPress={props.onItemPressed}>
-          <Image source={props.placeImage} style={styles.placeImage} />
-        </TouchableNativeFeedback>
-      ) : (
-          <Image source={props.placeImage} style={styles.placeImage} />
-        )}
+      <Image source={props.placeImage} style={styles.placeImage} />
       <View style={styles.listItemBottom}>
         <View style={styles.bottomLeft}>
           <View style={{ flexDirection: "row" }}>

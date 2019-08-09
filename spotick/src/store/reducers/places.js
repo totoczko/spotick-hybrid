@@ -32,10 +32,13 @@ const reducer = (state = initialState, action) => {
         return place.id === action.placeId;
       })
       let placesUpd = [...state.places]
-      placesUpd[index].likes = action.likes
+      let placeUpd = { ...placesUpd[index] }
+      placeUpd.likes = action.likes
       return {
         ...state,
-        places: placesUpd
+        places: placesUpd.map((item, i) => {
+          return i === index ? placeUpd : item
+        })
       }
     case REMOVE_PLACE:
       return {

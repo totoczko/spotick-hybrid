@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, Text, View, FlatList, Image, Animated, ActivityIndicator } from 'react-native'
+import { StyleSheet, ScrollView, Text, View, FlatList, Image, Animated, ActivityIndicator, TouchableNativeFeedback } from 'react-native'
 import { connect } from 'react-redux'
 import TabsSwitch from '../../components/UI/TabSwitch/TabsSwitch';
 import { getPlaces } from '../../store/actions/index'
+import { likePlace } from '../../store/actions/places';
 
 class UserScreen extends Component {
   state = {
@@ -47,29 +48,12 @@ class UserScreen extends Component {
     }
 
     if (event.type === "NavBarButtonPress") {
-      if (event.id === "sideDrawerToggle") {
-        this.props.navigator.toggleDrawer({
-          side: "left"
-        })
-      } else if (event.id === "settingsToggle") {
+      if (event.id === "settingsToggle") {
         this.props.navigator.toggleDrawer({
           side: "right"
         })
       }
     }
-  }
-
-  itemSelectedHandler = key => {
-    const selPlace = this.props.places.find(place => {
-      return place.key === key
-    })
-    this.props.navigator.push({
-      screen: "awesome-places.PlaceDetailScreen",
-      title: selPlace.shortText,
-      passProps: {
-        selectedPlace: selPlace
-      }
-    })
   }
 
   placesLoadedHandler = () => {
@@ -78,6 +62,31 @@ class UserScreen extends Component {
       duration: 500,
       useNativeDriver: true
     }).start()
+  }
+
+
+  itemSelectedHandler = (key, onLikePressed, userId) => {
+    const selPlace = this.props.places.find(place => {
+      return place.key === key
+    })
+    const deletingEnabled = userId === selPlace.user.id
+    this.props.navigator.push({
+      screen: "awesome-places.PlaceDetailScreen",
+      title: selPlace.shortText,
+      passProps: {
+        selectedPlace: selPlace,
+        onLikePressed: onLikePressed,
+        userId: userId,
+        deletingEnabled: deletingEnabled
+      }
+    })
+  }
+
+  itemLikeHandler = key => {
+    const selPlace = this.props.places.find(place => {
+      return place.key === key
+    })
+    this.props.onLikePlace(selPlace.id, selPlace.likes)
   }
 
   render() {
@@ -117,7 +126,9 @@ class UserScreen extends Component {
                     data={userPlaces(this.props.places, this.props.user.id)}
                     renderItem={({ item }) => (
                       <View style={{ flex: 1, flexDirection: 'column' }}>
-                        <Image style={styles.imageThumbnail} source={item.img} />
+                        <TouchableNativeFeedback onPress={() => this.itemSelectedHandler(item.key, this.itemLikeHandler, this.props.user.id)}>
+                          <Image style={styles.imageThumbnail} source={item.img} />
+                        </TouchableNativeFeedback>
                       </View>
                     )}
                     numColumns={2}
@@ -128,7 +139,9 @@ class UserScreen extends Component {
                       data={userLikes(this.props.places, this.props.user.id)}
                       renderItem={({ item }) => (
                         <View style={{ flex: 1, flexDirection: 'column' }}>
-                          <Image style={styles.imageThumbnail} source={item.img} />
+                          <TouchableNativeFeedback onPress={() => this.itemSelectedHandler(item.key, this.itemLikeHandler, this.props.user.id)}>
+                            <Image style={styles.imageThumbnail} source={item.img} />
+                          </TouchableNativeFeedback>
                         </View>
                       )}
                       numColumns={2}
@@ -186,7 +199,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLoadPlaces: () => dispatch(getPlaces())
+    onLoadPlaces: () => dispatch(getPlaces()),
+    onLikePlace: (placeId, likes) => dispatch(likePlace(placeId, likes))
   }
 }
 

@@ -13,7 +13,7 @@ export const likePlace = (postId, likes) => {
   return (dispatch, getState) => {
     const userId = getState().auth.id
     let countUpd = likes.count;
-    let usersUpd = likes.users ? likes.users : [];
+    let usersUpd = likes.users ? [...likes.users] : [];
     const likeIndex = usersUpd.indexOf(userId);
     if (likeIndex < 0) {
       countUpd++;

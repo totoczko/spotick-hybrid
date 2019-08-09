@@ -40,29 +40,6 @@ class FindPlaceScreen extends Component {
         this.props.onLoadPlaces()
       }
     }
-
-    if (event.type === "NavBarButtonPress") {
-      if (event.id === "sideDrawerToggle") {
-        this.props.navigator.toggleDrawer({
-          side: "left"
-        })
-      }
-    }
-  }
-
-  itemSelectedHandler = (key, onLikePressed, userId) => {
-    const selPlace = this.props.places.find(place => {
-      return place.key === key
-    })
-    this.props.navigator.push({
-      screen: "awesome-places.PlaceDetailScreen",
-      title: selPlace.shortText,
-      passProps: {
-        selectedPlace: selPlace,
-        onLikePressed: onLikePressed,
-        userId: userId
-      }
-    })
   }
 
   itemLikeHandler = key => {
@@ -86,7 +63,7 @@ class FindPlaceScreen extends Component {
         <Animated.View style={{
           opacity: this.state.placesAnim
         }}>
-          <PlaceList places={this.props.places} userId={this.props.auth.id} onItemSelected={this.itemSelectedHandler} onLikePressed={this.itemLikeHandler} />
+          <PlaceList places={this.props.places} userId={this.props.auth.id} onLikePressed={this.itemLikeHandler} />
         </Animated.View>
       ) : <ActivityIndicator />}
     </View>

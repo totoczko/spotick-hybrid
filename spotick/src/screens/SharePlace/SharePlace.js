@@ -116,14 +116,6 @@ class SharePlaceScreen extends Component {
         this.props.onStartAddPlace()
       }
     }
-
-    if (event.type === "NavBarButtonPress") {
-      if (event.id === "sideDrawerToggle") {
-        this.props.navigator.toggleDrawer({
-          side: "left"
-        })
-      }
-    }
   }
 
   placeAddedHandler = () => {

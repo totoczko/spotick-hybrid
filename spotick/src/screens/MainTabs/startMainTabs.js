@@ -14,45 +14,20 @@ const startTabs = () => {
       tabs: [
         {
           screen: "awesome-places.FindPlaceScreen",
-          title: "Mainsite",
+          title: "Spotick",
           icon: sources[0],
-          showLabel: false,
-          navigatorButtons: {
-            leftButtons: [
-              {
-                icon: sources[3],
-                title: "Menu",
-                id: "sideDrawerToggle"
-              }
-            ]
-          }
+          showLabel: false
         },
         {
           screen: "awesome-places.SharePlaceScreen",
-          title: "Add post",
-          icon: sources[1],
-          navigatorButtons: {
-            leftButtons: [
-              {
-                icon: sources[3],
-                title: "Menu",
-                id: "sideDrawerToggle"
-              }
-            ]
-          }
+          title: "Dodaj post",
+          icon: sources[1]
         },
         {
           screen: "awesome-places.UserScreen",
-          title: "Profile",
+          title: "Profil",
           icon: sources[2],
           navigatorButtons: {
-            leftButtons: [
-              {
-                icon: sources[3],
-                title: "Menu",
-                id: "sideDrawerToggle"
-              }
-            ],
             rightButtons: [
               {
                 icon: sources[4],
@@ -71,9 +46,6 @@ const startTabs = () => {
         tabBarSelectedButtonColor: "#212985" //android
       },
       drawer: {
-        left: {
-          screen: "awesome-places.SideDrawer"
-        },
         right: {
           screen: "awesome-places.Settings"
         }

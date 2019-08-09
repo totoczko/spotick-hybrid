@@ -24,12 +24,7 @@ class PlaceDetail extends Component {
 
   render() {
     return (
-      <View
-        style={[
-          styles.container,
-          styles.portraitContainer
-        ]}
-      >
+      <View style={styles.container}>
         <ListItem
           placeText={this.props.selectedPlace.shortText}
           placeDate={this.props.selectedPlace.data}
@@ -40,32 +35,21 @@ class PlaceDetail extends Component {
           userId={this.props.userId}
           onLikePressed={() => this.props.onLikePressed(this.props.selectedPlace.key)}
         />
-        <View style={styles.placeDetailContainer}>
+        {this.props.deletingEnabled ? (
           <View style={styles.subContainer}>
-            <Image
-              source={this.props.selectedPlace.img}
-              style={styles.placeImage}
-            />
+            <View>
+              <TouchableOpacity onPress={this.placeDeletedHandler}>
+                <View style={styles.deleteButton}>
+                  <Icon
+                    size={30}
+                    name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
+                    color="red"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={styles.subContainer}>
-          <View>
-            <Text style={styles.placeText}>
-              {this.props.selectedPlace.shortText}
-            </Text>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.placeDeletedHandler}>
-              <View style={styles.deleteButton}>
-                <Icon
-                  size={30}
-                  name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
-                  color="red"
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+        ) : null}
       </View>
     );
   }
@@ -73,23 +57,7 @@ class PlaceDetail extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 22,
     flex: 1
-  },
-  portraitContainer: {
-    flexDirection: "column"
-  },
-  placeDetailContainer: {
-    flex: 2
-  },
-  placeImage: {
-    width: "100%",
-    height: "100%"
-  },
-  placeText: {
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 28
   },
   deleteButton: {
     alignItems: "center"
