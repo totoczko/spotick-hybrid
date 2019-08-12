@@ -80,7 +80,7 @@ exports.deleteImage = functions.database.ref("/places/{placeId}").onDelete(snaps
 })
 
 exports.sendNotification = functions.database.ref("/places/{postUid}")
-  .onWrite(async (change, context) => {
+  .onCreate(async (change, context) => {
     // Path segment values are read from event.params
     const postUid = context.params.postUid;
     console.log('We have a new post UID:', postUid);

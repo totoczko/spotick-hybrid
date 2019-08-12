@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     width: "80%",
-    height: 700
+    height: 500
   },
   backgroundImage: {
     width: "100%",
