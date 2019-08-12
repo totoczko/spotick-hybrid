@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import ImagePicker from "react-native-image-picker"
-import ButtonWithBackground from '../UI/ButtonWithBackground/ButtonWithBackground';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Platform } from 'react-native'
 

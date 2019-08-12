@@ -1,5 +1,3 @@
-// import { ADD_PLACE, DELETE_PLACE, SELECT_PLACE, DESELECT_PLACE } from '../actions/actionTypes'
-// import { ADD_PLACE, DELETE_PLACE } from '../actions/actionTypes'
 import { SET_PLACES, SET_LIKES, REMOVE_PLACE, PLACE_ADDED, START_ADD_PLACE } from '../actions/actionTypes'
 
 const initialState = {

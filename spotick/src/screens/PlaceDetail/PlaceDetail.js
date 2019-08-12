@@ -1,23 +1,16 @@
 import React, { Component } from "react";
 import {
   View,
-  Image,
-  Text,
   StyleSheet,
-  TouchableOpacity,
-  Platform
 } from "react-native";
 import { connect } from "react-redux";
-
-import Icon from "react-native-vector-icons/Ionicons";
 import { deletePlace } from "../../store/actions/index";
 import ListItem from "../../components/ListItem/ListItem";
 
 class PlaceDetail extends Component {
-  state = {
-  };
 
   placeDeletedHandler = () => {
+    console.log(this.props.selectedPlace.key)
     this.props.onDeletePlace(this.props.selectedPlace.key);
     this.props.navigator.pop();
   };
@@ -34,22 +27,9 @@ class PlaceDetail extends Component {
           placeLikes={this.props.selectedPlace.likes}
           userId={this.props.userId}
           onLikePressed={() => this.props.onLikePressed(this.props.selectedPlace.key)}
+          deleting={this.props.deletingEnabled}
+          deleteHandler={this.placeDeletedHandler}
         />
-        {this.props.deletingEnabled ? (
-          <View style={styles.subContainer}>
-            <View>
-              <TouchableOpacity onPress={this.placeDeletedHandler}>
-                <View style={styles.deleteButton}>
-                  <Icon
-                    size={30}
-                    name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
-                    color="red"
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : null}
       </View>
     );
   }

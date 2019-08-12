@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Dimensions, Text } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 
 export default class PickLocation extends Component {
   state = {

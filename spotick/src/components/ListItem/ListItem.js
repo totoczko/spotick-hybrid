@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableNativeFeedback, Image } from 'react-na
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Platform } from 'react-native'
 import { formatData } from '../../utility/formatData';
+import MenuModal from '../MenuModal/MenuModal';
 
 // TouchableNativeFeedback only on Android!
 const ListItem = (props) => {
@@ -14,6 +15,9 @@ const ListItem = (props) => {
           <View><Text>{props.placeUser.name}</Text></View>
           <View><Text>{formatData(props.placeDate)}</Text></View>
         </View>
+        {props.deleting ? (
+          <MenuModal deleteHandler={props.deleteHandler} />
+        ) : null}
       </View>
       <Image source={props.placeImage} style={styles.placeImage} />
       <View style={styles.listItemBottom}>

@@ -82,7 +82,7 @@ class Settings extends Component {
 
   componentWillUnmount() {
     this.notificationListener();
-    this.notificationOpenedListener();
+    // this.notificationOpenedListener();
   }
 
   handleUpdateData = (key, value) => {

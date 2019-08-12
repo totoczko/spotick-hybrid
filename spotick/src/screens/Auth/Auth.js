@@ -10,7 +10,6 @@ import {
   Text
 } from "react-native";
 import { connect } from "react-redux";
-
 import DefaultInput from "../../components/UI/DefaultInput/DefaultInput";
 import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import MainText from "../../components/UI/MainText/MainText";
