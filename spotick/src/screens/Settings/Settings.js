@@ -27,14 +27,14 @@ class Settings extends Component {
         },
         touched: false
       },
-      confirmPassword: {
-        value: "",
-        valid: false,
-        validationRules: {
-          equalTo: "password"
-        },
-        touched: false
-      },
+      // confirmPassword: {
+      //   value: "",
+      //   valid: false,
+      //   validationRules: {
+      //     equalTo: "password"
+      //   },
+      //   touched: false
+      // },
       username: {
         value: "",
         valid: false,
@@ -88,7 +88,8 @@ class Settings extends Component {
   handleUpdateData = (key, value) => {
     let valid = false;
     if (key === 'password') {
-      valid = this.state.controls.password.valid && this.state.controls.confirmPassword.valid
+      // valid = this.state.controls.password.valid && this.state.controls.confirmPassword.valid
+      valid = this.state.controls.password.valid
     } else if (key === 'email') {
       valid = this.state.controls.email.valid
     } else if (key === 'username') {
@@ -122,17 +123,17 @@ class Settings extends Component {
       return {
         controls: {
           ...prevState.controls,
-          confirmPassword: {
-            ...prevState.controls.confirmPassword,
-            valid:
-              key === "password"
-                ? validate(
-                  prevState.controls.confirmPassword.value,
-                  prevState.controls.confirmPassword.validationRules,
-                  connectedValue
-                )
-                : prevState.controls.confirmPassword.valid
-          },
+          // confirmPassword: {
+          //   ...prevState.controls.confirmPassword,
+          //   valid:
+          //     key === "password"
+          //       ? validate(
+          //         prevState.controls.confirmPassword.value,
+          //         prevState.controls.confirmPassword.validationRules,
+          //         connectedValue
+          //       )
+          //       : prevState.controls.confirmPassword.valid
+          // },
           [key]: {
             ...prevState.controls[key],
             value: value,
@@ -268,14 +269,14 @@ class Settings extends Component {
                 touched={this.state.controls.password.touched}
                 secureTextEntry
               />
-              <DefaultInput
+              {/* <DefaultInput
                 placeholder="Potwierdź hasło"
                 value={this.state.controls.confirmPassword.value}
                 onChangeText={val => this.updateInputState("confirmPassword", val)}
                 valid={this.state.controls.confirmPassword.valid}
                 touched={this.state.controls.confirmPassword.touched}
                 secureTextEntry
-              />
+              /> */}
             </View>
             <ButtonPlain
               color="#3f51b5"

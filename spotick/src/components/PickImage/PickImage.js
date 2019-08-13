@@ -19,6 +19,9 @@ export default class PickImage extends Component {
     ImagePicker.showImagePicker(
       {
         title: 'Wybierz zdjęcie',
+        chooseFromLibraryButtonTitle: 'Wybierz z galerii',
+        takePhotoButtonTitle: 'Zrób zdjęcie',
+        cancelButtonTitle: 'Anuluj',
         maxWidth: 800,
         maxHeight: 600
       },

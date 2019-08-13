@@ -41,14 +41,14 @@ class AuthScreen extends Component {
         },
         touched: false
       },
-      confirmPassword: {
-        value: "",
-        valid: false,
-        validationRules: {
-          equalTo: "password"
-        },
-        touched: false
-      },
+      // confirmPassword: {
+      //   value: "",
+      //   valid: false,
+      //   validationRules: {
+      //     equalTo: "password"
+      //   },
+      //   touched: false
+      // },
       username: {
         value: "",
         valid: false,
@@ -116,17 +116,17 @@ class AuthScreen extends Component {
       return {
         controls: {
           ...prevState.controls,
-          confirmPassword: {
-            ...prevState.controls.confirmPassword,
-            valid:
-              key === "password"
-                ? validate(
-                  prevState.controls.confirmPassword.value,
-                  prevState.controls.confirmPassword.validationRules,
-                  connectedValue
-                )
-                : prevState.controls.confirmPassword.valid
-          },
+          // confirmPassword: {
+          //   ...prevState.controls.confirmPassword,
+          //   valid:
+          //     key === "password"
+          //       ? validate(
+          //         prevState.controls.confirmPassword.value,
+          //         prevState.controls.confirmPassword.validationRules,
+          //         connectedValue
+          //       )
+          //       : prevState.controls.confirmPassword.valid
+          // },
           [key]: {
             ...prevState.controls[key],
             value: value,
@@ -144,7 +144,7 @@ class AuthScreen extends Component {
 
   render() {
     let headingText = null;
-    let confirmPasswordControl = null;
+    // let confirmPasswordControl = null;
     let usernameControl = null;
     let submitButton = (
       <ButtonWithBackground
@@ -152,8 +152,8 @@ class AuthScreen extends Component {
         textColor="#fff"
         onPress={this.authHandler}
         disabled={
-          (!this.state.controls.confirmPassword.valid &&
-            this.state.authMode === "signup") ||
+          // (!this.state.controls.confirmPassword.valid &&
+          //   this.state.authMode === "signup") ||
           !this.state.controls.email.valid ||
           !this.state.controls.password.valid ||
           !this.state.controls.username.valid &&
@@ -171,26 +171,26 @@ class AuthScreen extends Component {
         </MainText>
       );
     }
-    if (this.state.authMode === "signup") {
-      confirmPasswordControl = (
-        <View
-          style={
-            this.state.viewMode === "portrait"
-              ? styles.portraitPasswordWrapper
-              : styles.landscapePasswordWrapper
-          }
-        >
-          <DefaultInput
-            placeholder="Potwierdź hasło"
-            value={this.state.controls.confirmPassword.value}
-            onChangeText={val => this.updateInputState("confirmPassword", val)}
-            valid={this.state.controls.confirmPassword.valid}
-            touched={this.state.controls.confirmPassword.touched}
-            secureTextEntry
-          />
-        </View>
-      );
-    }
+    // if (this.state.authMode === "signup") {
+    //   confirmPasswordControl = (
+    //     <View
+    //       style={
+    //         this.state.viewMode === "portrait"
+    //           ? styles.portraitPasswordWrapper
+    //           : styles.landscapePasswordWrapper
+    //       }
+    //     >
+    //       <DefaultInput
+    //         placeholder="Potwierdź hasło"
+    //         value={this.state.controls.confirmPassword.value}
+    //         onChangeText={val => this.updateInputState("confirmPassword", val)}
+    //         valid={this.state.controls.confirmPassword.valid}
+    //         touched={this.state.controls.confirmPassword.touched}
+    //         secureTextEntry
+    //       />
+    //     </View>
+    //   );
+    // }
     if (this.state.authMode === "signup") {
       usernameControl = (
         <View
@@ -261,7 +261,7 @@ class AuthScreen extends Component {
                     secureTextEntry
                   />
                 </View>
-                {confirmPasswordControl}
+                {/* {confirmPasswordControl} */}
                 {usernameControl}
               </View>
             </View>
