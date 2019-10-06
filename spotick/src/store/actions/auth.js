@@ -5,7 +5,7 @@ import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 import App from '../../../App'
 
-const API_KEY = "AIzaSyD_oOy6uUjeieDfpQKICsTsYnz7tpcZDPw";
+const API_KEY = "";
 
 const getUserColor = () => {
   const letters = '0123456789ABCDEF';
