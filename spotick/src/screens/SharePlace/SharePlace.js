@@ -101,7 +101,7 @@ class SharePlaceScreen extends Component {
   }
 
   getCity(lat, long) {
-    return fetch("https://us1.locationiq.com/v1/reverse.php?key=2c35b6ae22579a&lat=" + lat + "&lon=" + long + "&format=json", {
+    return fetch("https://us1.locationiq.com/v1/reverse.php?key=&lat=" + lat + "&lon=" + long + "&format=json", {
       "async": true,
       "crossDomain": true,
       "method": "GET"
